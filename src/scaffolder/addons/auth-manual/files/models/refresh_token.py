@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..db.base import Base
 from .mixins import TimestampMixin
+from .user import User
 
 
 class RefreshToken(TimestampMixin, Base):

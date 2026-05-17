@@ -63,10 +63,6 @@ config = TemplateConfig(
             file="tests/conftest.py",
             locator=LocatorSpec(name="at_module_end", args={}),
         ),
-        "model_imports": InjectionPoint(
-            file="src/{{pkg_name}}/models/__init__.py",
-            locator=LocatorSpec(name="at_module_end", args={}),
-        ),
         "exceptions": InjectionPoint(
             file="src/{{pkg_name}}/exceptions.py",
             locator=LocatorSpec(name="at_module_end", args={}),

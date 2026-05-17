@@ -2,3 +2,9 @@
 uv sync --python-preference only-system --quiet
 source .venv/bin/activate
 export PYTHONPATH="$PWD/src"
+
+# One-time auto-format on first cd (before first commit)
+if ! git rev-parse HEAD >/dev/null 2>&1; then
+    uv run ruff check --fix .
+    uv run ruff format .
+fi

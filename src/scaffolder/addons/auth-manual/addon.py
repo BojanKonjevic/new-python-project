@@ -117,10 +117,6 @@ async def auth_client(client: AsyncClient, test_user: User) -> AsyncClient:
     return client''',
         ),
         Injection(
-            point="model_imports",
-            content="from .user import User\nfrom .refresh_token import RefreshToken",
-        ),
-        Injection(
             point="exceptions",
             content=(
                 "\n\nclass UnauthorizedError(HTTPException):\n"
