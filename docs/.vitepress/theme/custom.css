@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap');
+
+/* ─── Base tokens — light mode ─────────────────────────────────────────────── */
+:root {
+  --vp-font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --vp-font-family-mono: 'Geist Mono', 'Menlo', 'Consolas', monospace;
+
+  /* Brand */
+  --vp-c-brand-1: #7a6248;
+  --vp-c-brand-2: #7a6248;
+  --vp-c-brand-3: #a08060;
+  --vp-c-brand-soft: rgba(122, 98, 72, 0.09);
+
+  /* Backgrounds */
+  --vp-c-bg: #f7f6f2;
+  --vp-c-bg-soft: #efede8;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-alt: #efede8;
+
+  /* Text */
+  --vp-c-text-1: #18181a;
+  --vp-c-text-2: #42414a;
+  --vp-c-text-3: #65636e;
+
+  /* Borders */
+  --vp-c-divider: #dddad3;
+  --vp-c-border: #dddad3;
+  --vp-c-gutter: #f7f6f2;
+
+  /* Nav */
+  --vp-nav-height: 52px;
+  --vp-nav-bg-color: rgba(247, 246, 242, 0.94);
+
+  /* Sidebar */
+  --vp-sidebar-bg-color: #f7f6f2;
+}
+
+/* ─── Dark mode ─────────────────────────────────────────────────────────────── */
+.dark {
+  --vp-c-bg: #111110;
+  --vp-c-bg-soft: #1e1c1a;
+  --vp-c-bg-elv: #191917;
+  --vp-c-bg-alt: #1e1c1a;
+
+  --vp-c-text-1: #eeece8;
+  --vp-c-text-2: #b0ada6;
+  --vp-c-text-3: #7a7872;
+
+  --vp-c-divider: #282622;
+  --vp-c-border: #282622;
+  --vp-c-gutter: #111110;
+
+  --vp-c-brand-1: #c09a70;
+  --vp-c-brand-2: #c09a70;
+  --vp-c-brand-3: #a08060;
+  --vp-c-brand-soft: rgba(192, 154, 112, 0.10);
+
+  --vp-nav-bg-color: rgba(17, 17, 16, 0.94);
+  --vp-sidebar-bg-color: #111110;
+}
+
+/* ─── Nav ───────────────────────────────────────────────────────────────────── */
+.VPNav {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--vp-c-border);
+}
+
+.VPNavBarTitle .title {
+  font-family: 'Geist Mono', monospace;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  font-size: 15px;
+  color: var(--vp-c-text-1);
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────────────────────── */
+.VPSidebar {
+  font-size: 13px;
+}
+
+.VPSidebarItem .text {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ─── Typography ────────────────────────────────────────────────────────────── */
+.vp-doc h1 {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.vp-doc h2 {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.vp-doc h3,
+.vp-doc h4,
+.vp-doc h5,
+.vp-doc h6 {
+  font-family: 'Instrument Sans', -apple-system, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Links ─────────────────────────────────────────────────────────────────── */
+.vp-doc a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.vp-doc a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ─── Inline code ───────────────────────────────────────────────────────────── */
+.vp-doc :not(pre) > code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.875em;
+  color: var(--vp-c-brand-1);
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-weight: 500;
+}
+
+/* ─── Code blocks ───────────────────────────────────────────────────────────── */
+.vp-doc div[class*='language-'] {
+  background: #171614;
+  border: 1px solid #2a2825;
+  border-radius: 6px;
+}
+
+.dark .vp-doc div[class*='language-'] {
+  background: #0c0b0a;
+  border-color: #232120;
+}
+
+.vp-doc div[class*='language-'] code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.875em;
+  color: #c8c5be;
+}
+
+/* Language label */
+.vp-doc div[class*='language-'] > span.lang {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: #585550;
+}
+
+/* ─── Custom blocks (callouts) ──────────────────────────────────────────────── */
+.vp-doc .custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+}
+
+.vp-doc .custom-block.warning {
+  border-color: #a07840;
+  background: rgba(160, 120, 64, 0.08);
+}
+
+/* ─── Tables ────────────────────────────────────────────────────────────────── */
+.vp-doc table {
+  font-size: 14px;
+}
+
+.vp-doc th {
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3);
+}
+
+/* ─── Home page (minimal — real landing page is standalone index.html) ──────── */
+.VPHome {
+  padding-top: 80px;
+}

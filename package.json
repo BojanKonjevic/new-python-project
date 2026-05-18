@@ -1,0 +1,14 @@
+{
+  "name": "zenit-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs --strict-dead-links",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.3.0",
+    "typescript": "^5.0.0"
+  }
+}

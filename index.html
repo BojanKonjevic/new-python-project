@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zenit · Scaffold Python projects without lock-in</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f7f6f2;
+            --bg-elevated: #ffffff;
+            --bg-code: #efede8;
+            --text-primary: #18181a;
+            --text-secondary: #42414a;
+            --text-tertiary: #65636e;
+            --text-muted: #9997a3;
+            --border: #dddad3;
+            --border-light: #e8e5df;
+            --accent: #18181a;
+            --accent-hover: #000;
+            --accent-muted: rgba(24,24,26,0.05);
+            --accent-warm: #7a6248;
+            --accent-warm-muted: rgba(122,98,72,0.09);
+            --terminal-bg: #171614;
+            --terminal-border: #2a2825;
+            --terminal-text: #c8c5be;
+            --terminal-prompt: #b89a72;
+            --terminal-highlight: #82b07a;
+            --terminal-info: #6ea4c0;
+            --terminal-dim: #585550;
+            --nav-bg: rgba(247,246,242,0.94);
+            --check: #3a7040;
+            --cross: #8f4040;
+        }
+
+        [data-theme="dark"] {
+            --bg: #111110;
+            --bg-elevated: #191917;
+            --bg-code: #1e1c1a;
+            --text-primary: #eeece8;
+            --text-secondary: #b0ada6;
+            --text-tertiary: #7a7872;
+            --text-muted: #55534e;
+            --border: #282622;
+            --border-light: #201e1c;
+            --accent: #dedad4;
+            --accent-hover: #f5f2ed;
+            --accent-muted: rgba(238,236,232,0.05);
+            --accent-warm: #c09a70;
+            --accent-warm-muted: rgba(192,154,112,0.10);
+            --terminal-bg: #0c0b0a;
+            --terminal-border: #232120;
+            --terminal-text: #c4c1ba;
+            --terminal-prompt: #b89a72;
+            --terminal-highlight: #8fba86;
+            --terminal-info: #7aafc6;
+            --terminal-dim: #4e4c48;
+            --nav-bg: rgba(17,17,16,0.94);
+            --check: #6aaa62;
+            --cross: #b87070;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.25s, color 0.25s;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Nav */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: blur(16px) saturate(1.3);
+            -webkit-backdrop-filter: blur(16px) saturate(1.3);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.25s, border-color 0.25s;
+        }
+
+        .logo {
+            font-family: 'Geist Mono', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: opacity 0.15s;
+        }
+        .logo a:hover { opacity: 0.5; }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            transition: color 0.15s;
+        }
+        .nav-link:hover { color: var(--text-primary); }
+
+        .theme-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .theme-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
+
+        /* Hero */
+        .hero {
+            padding: 5.5rem 0 2rem;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            margin-bottom: 2rem;
+        }
+
+        .hero-eyebrow-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent-warm);
+            flex-shrink: 0;
+        }
+
+        .hero h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            line-height: 1.18;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--text-tertiary);
+        }
+
+        .hero-lead {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            line-height: 1.75;
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 0.625rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            border: 1px solid var(--accent);
+            transition: background 0.15s, transform 0.15s;
+        }
+        [data-theme="dark"] .btn-primary { color: #111110; }
+        .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); transform: translateY(-1px); }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            background: transparent;
+            color: var(--text-tertiary);
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            border: 1px solid var(--border);
+            transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .btn-ghost:hover { color: var(--text-primary); border-color: var(--text-muted); background: var(--accent-muted); }
+
+        /* Install strip */
+        .install-strip {
+            margin: 2.5rem 0;
+        }
+
+        .install-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 0.7rem 1rem;
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.78rem;
+            transition: border-color 0.15s;
+        }
+        .install-pill:hover { border-color: var(--text-muted); }
+
+        .install-pill code {
+            color: var(--text-secondary);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.2rem;
+            display: flex;
+            align-items: center;
+            border-radius: 3px;
+            transition: color 0.15s;
+        }
+        .copy-btn:hover { color: var(--text-primary); }
+        .copy-btn.copied { color: var(--terminal-highlight); }
+
+        /* Terminal */
+        .terminal {
+            background: var(--terminal-bg);
+            border: 1px solid var(--terminal-border);
+            border-radius: 9px;
+            overflow: hidden;
+            margin: 0 0 4rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .terminal-chrome {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.875rem;
+            border-bottom: 1px solid var(--terminal-border);
+            gap: 0.4rem;
+        }
+
+        .tc { width: 10px; height: 10px; border-radius: 50%; }
+        .tc-r { background: #cc6666; }
+        .tc-y { background: #ccaa55; }
+        .tc-g { background: #66aa66; }
+
+        .terminal-label {
+            margin: 0 auto;
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--terminal-dim);
+            letter-spacing: 0.04em;
+        }
+
+        .terminal-body {
+            padding: 1.25rem 1.5rem 1.5rem;
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.775rem;
+            line-height: 1.8;
+        }
+
+        .tl {
+            display: flex;
+            gap: 0.625rem;
+            opacity: 0;
+            animation: fadeUp 0.3s ease forwards;
+        }
+
+        .tl:nth-child(1)  { animation-delay: 0.1s; }
+        .tl:nth-child(2)  { animation-delay: 0.35s; }
+        .tl:nth-child(3)  { animation-delay: 0.55s; }
+        .tl:nth-child(4)  { animation-delay: 0.75s; }
+        .tl:nth-child(5)  { animation-delay: 0.95s; }
+        .tl:nth-child(6)  { animation-delay: 1.15s; }
+        .tl:nth-child(7)  { animation-delay: 1.5s; }
+        .tl:nth-child(8)  { animation-delay: 1.75s; }
+        .tl:nth-child(9)  { animation-delay: 2.0s; }
+        .tl:nth-child(10) { animation-delay: 2.25s; }
+        .tl:nth-child(11) { animation-delay: 2.5s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(3px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .t-prompt { color: var(--terminal-prompt); flex-shrink: 0; }
+        .t-cmd    { color: var(--terminal-text); }
+        .t-dim    { color: var(--terminal-dim); padding-left: 1.25rem; }
+        .t-ok     { color: var(--terminal-highlight); }
+        .t-arrow  { color: var(--terminal-info); }
+        .t-info   { color: var(--terminal-text); padding-left: 1.25rem; }
+        .t-blank  { height: 0.5rem; }
+
+        .t-cursor {
+            display: inline-block;
+            width: 6px;
+            height: 0.9em;
+            background: var(--terminal-prompt);
+            vertical-align: text-bottom;
+            animation: blink 1.1s step-end infinite;
+            margin-left: 1px;
+        }
+        @keyframes blink {
+            0%,100% { opacity: 1; }
+            50%      { opacity: 0; }
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0;
+        }
+
+        /* Sections */
+        .section {
+            padding: 3.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .section:last-of-type { border-bottom: none; }
+
+        .section-kicker {
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.625rem;
+        }
+
+        .section-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(1.35rem, 2.8vw, 1.7rem);
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+            margin-bottom: 0.625rem;
+            color: var(--text-primary);
+        }
+
+        .section-sub {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+            max-width: 480px;
+            line-height: 1.75;
+            margin-bottom: 2rem;
+        }
+
+        /* Comparison */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        .compare-table th {
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0.5rem 0.875rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        .compare-table td {
+            padding: 0.8rem 0.875rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+
+        .compare-table td:first-child {
+            color: var(--text-primary);
+            font-weight: 500;
+            width: 38%;
+        }
+
+        .compare-table .yes { color: var(--check); font-weight: 600; }
+        .compare-table .no  { color: var(--cross); font-weight: 500; }
+
+        .compare-table .highlight-row td {
+            background: var(--accent-muted);
+        }
+        .compare-table .highlight-row td:first-child {
+            font-weight: 600;
+        }
+
+        .compare-note {
+            margin-top: 0.875rem;
+            font-size: 0.79rem;
+            color: var(--text-muted);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.79em;
+            color: var(--accent-warm);
+        }
+
+        /* Feature grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.875rem;
+        }
+
+        .feature-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .feature-card:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 1.1rem;
+            margin-bottom: 0.875rem;
+            display: block;
+            line-height: 1;
+        }
+
+        .feature-card h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .feature-card p {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            line-height: 1.65;
+        }
+
+        /* Ops grid */
+        .ops-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .ops-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.125rem 1.25rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .ops-card:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-1px);
+        }
+
+        .ops-cmd {
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.77rem;
+            font-weight: 500;
+            color: var(--accent-warm);
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .ops-card p {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            line-height: 1.65;
+        }
+
+        /* Components */
+        .component-box {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 0.75rem;
+        }
+
+        .component-box + .component-box { margin-top: 0.625rem; }
+
+        .component-label {
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.625rem;
+            font-weight: 500;
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+        }
+
+        .tag {
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.73rem;
+            padding: 0.275rem 0.65rem;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-tertiary);
+            transition: color 0.15s, border-color 0.15s;
+            cursor: default;
+        }
+        .tag:hover { color: var(--text-secondary); border-color: var(--text-muted); }
+
+        /* CTA */
+        .cta-section {
+            padding: 4rem 0 2.5rem;
+            text-align: center;
+        }
+
+        .cta-section .section-title { margin: 0 auto 0.625rem; }
+        .cta-section .section-sub   { margin: 0 auto 2rem; }
+        .cta-section .hero-actions  { justify-content: center; }
+
+        /* Footer */
+        .footer {
+            padding: 2.5rem 0 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.78rem;
+            transition: color 0.15s;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        .footer-meta {
+            font-family: 'Geist Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 680px) {
+            .hero { padding: 3.5rem 0 1.5rem; }
+            .hero h1 { font-size: 1.85rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .ops-grid { grid-template-columns: 1fr; }
+            .hero-actions { flex-direction: column; align-items: flex-start; }
+            .footer-inner { flex-direction: column; align-items: flex-start; }
+            .nav { padding: 0 1.25rem; }
+            .container { padding: 0 1.25rem; }
+            .compare-table td:first-child { width: 46%; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="logo"><a href="/">zenit</a></div>
+    <div class="nav-right">
+        <a href="/docs/getting-started" class="nav-link">Docs</a>
+        <a href="https://github.com/BojanKonjevic/zenit" class="nav-link">GitHub</a>
+        <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+            <span id="themeIcon">☀</span>
+        </button>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            v0.1.0 &mdash; open source
+        </div>
+        <h1>Scaffold Python projects.<br><em>Add what you need. Remove cleanly.</em></h1>
+        <p class="hero-lead">
+            Zenit generates a complete, working project you own entirely. Use it to manage addons over time, or delete <code>.zenit.toml</code> and walk away — your project keeps running either way.
+        </p>
+        <div class="hero-actions">
+            <a href="/docs/getting-started" class="btn-primary">Read the docs →</a>
+            <a href="https://github.com/BojanKonjevic/zenit" class="btn-ghost">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                GitHub
+            </a>
+        </div>
+    </div>
+
+    <!-- Install -->
+    <div class="install-strip">
+        <div class="install-pill">
+            <code>$ uv tool install zenit</code>
+            <button class="copy-btn" id="copyBtn" aria-label="Copy install command">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Terminal -->
+    <div class="terminal">
+        <div class="terminal-chrome">
+            <div class="tc tc-r"></div>
+            <div class="tc tc-y"></div>
+            <div class="tc tc-g"></div>
+            <span class="terminal-label">bash</span>
+        </div>
+        <div class="terminal-body">
+            <div class="tl"><span class="t-prompt">$</span><span class="t-cmd">zenit create my-api</span></div>
+            <div class="tl"><span class="t-dim"><span class="t-ok">✔</span> template  fastapi</span></div>
+            <div class="tl"><span class="t-dim"><span class="t-ok">✔</span> addons    docker, redis</span></div>
+            <div class="tl"><span class="t-dim"><span class="t-ok">✔</span> wrote     pyproject.toml, justfile, .env.example</span></div>
+            <div class="tl"><span class="t-dim"><span class="t-ok">✔</span> git init</span></div>
+            <div class="tl"><span class="t-dim"><span class="t-arrow">→</span> my-api/ ready</span></div>
+            <div class="tl t-blank"></div>
+            <div class="tl"><span class="t-prompt">$</span><span class="t-cmd">cd my-api &amp;&amp; just run</span></div>
+            <div class="tl"><span class="t-info">INFO&nbsp;&nbsp;&nbsp;&nbsp; Uvicorn running on <span class="t-ok">http://127.0.0.1:8000</span></span></div>
+            <div class="tl"><span class="t-info">INFO&nbsp;&nbsp;&nbsp;&nbsp; Application startup complete.</span></div>
+            <div class="tl"><span class="t-prompt">$</span><span class="t-cursor"></span></div>
+        </div>
+    </div>
+
+    <!-- Comparison -->
+    <div class="section reveal">
+        <div class="section-kicker">Comparison</div>
+        <h2 class="section-title">Why Zenit?</h2>
+        <p class="section-sub">Most scaffolders give you a starting point. Zenit gives you a project you actually own.</p>
+
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Other scaffolds</th>
+                    <th>Zenit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Runtime dependency</td>
+                    <td class="no">Required</td>
+                    <td class="yes">None</td>
+                </tr>
+                <tr>
+                    <td>Remove addons cleanly</td>
+                    <td class="no">Manual cleanup</td>
+                    <td class="yes"><code>zenit remove</code></td>
+                </tr>
+                <tr>
+                    <td>Verify project health</td>
+                    <td class="no">Not available</td>
+                    <td class="yes"><code>zenit doctor</code></td>
+                </tr>
+                <tr>
+                    <td>Code injection method</td>
+                    <td class="no">Regex / string replace</td>
+                    <td class="yes">AST-aware (libcst)</td>
+                </tr>
+                <tr>
+                    <td>Uninstall safely</td>
+                    <td class="no">Breaks your project</td>
+                    <td class="yes"><code>uv remove zenit</code></td>
+                </tr>
+                <tr class="highlight-row">
+                    <td>Lock-in</td>
+                    <td class="no">Permanent</td>
+                    <td class="yes">Zero</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p class="compare-note">
+            Zenit is useful long-term but you're never trapped. Delete <code>.zenit.toml</code> anytime — your project keeps running exactly as before.
+        </p>
+    </div>
+
+    <!-- Architecture -->
+    <div class="section reveal">
+        <div class="section-kicker">Architecture</div>
+        <h2 class="section-title">How it works</h2>
+        <p class="section-sub">Three layers that produce a complete project with no runtime dependency on Zenit itself.</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="feature-icon">📐</span>
+                <h3>Templates</h3>
+                <p>A base project structure — directories, core files, dependencies. Choose <code>blank</code> or <code>fastapi</code>.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🧩</span>
+                <h3>Addons</h3>
+                <p>Incremental additions layered on top. Add or remove at any time without breaking your project.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3>Your project</h3>
+                <p>A complete, ready-to-run codebase. No runtime dependency on Zenit. Ever.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operations -->
+    <div class="section reveal">
+        <div class="section-kicker">Operations</div>
+        <h2 class="section-title">Stay in control</h2>
+        <p class="section-sub">Verify, manage, and clean up your project at any time with four commands.</p>
+
+        <div class="ops-grid">
+            <div class="ops-card">
+                <span class="ops-cmd">zenit add &lt;addon&gt;</span>
+                <p>Installs dependencies, creates files, injects code, and updates configuration. Reversible at any time.</p>
+            </div>
+            <div class="ops-card">
+                <span class="ops-cmd">zenit remove &lt;addon&gt;</span>
+                <p>Deletes files, dependencies, compose services, env vars, and code injections. Clean and complete.</p>
+            </div>
+            <div class="ops-card">
+                <span class="ops-cmd">zenit doctor</span>
+                <p>Verifies every file, injection, and dependency against the manifest. Catches drift before it becomes a problem.</p>
+            </div>
+            <div class="ops-card">
+                <span class="ops-cmd">zenit list</span>
+                <p>See all available templates and addons. Check what's installed and what you can add next.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trust -->
+    <div class="section reveal">
+        <div class="section-kicker">Trust</div>
+        <h2 class="section-title">Built to be transparent</h2>
+        <p class="section-sub">No regex hacks, no hidden state. Zenit tracks exactly what it touched and can undo all of it.</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🔗</span>
+                <h3>Structural injection</h3>
+                <p>Code inserted via libcst — AST-aware, formatter-resilient. No regex hacks that break on style changes.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Fingerprinted manifest</h3>
+                <p>Every injected block is hashed. Zenit knows exactly what it wrote and can verify or remove it safely.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔓</span>
+                <h3>Zero lock-in</h3>
+                <p>Delete <code>.zenit.toml</code> and <code>uv remove zenit</code>. Your project runs without us.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Components -->
+    <div class="section reveal">
+        <div class="section-kicker">Components</div>
+        <h2 class="section-title">What's included</h2>
+        <p class="section-sub">A small, intentional set of templates and addons to scaffold production-ready Python projects.</p>
+
+        <div class="component-box">
+            <div class="component-label">Templates</div>
+            <div class="tag-row">
+                <span class="tag">blank</span>
+                <span class="tag">fastapi</span>
+            </div>
+        </div>
+
+        <div class="component-box">
+            <div class="component-label">Addons</div>
+            <div class="tag-row">
+                <span class="tag">auth-manual</span>
+                <span class="tag">celery</span>
+                <span class="tag">docker</span>
+                <span class="tag">github-actions</span>
+                <span class="tag">redis</span>
+                <span class="tag">sentry</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section reveal">
+        <h2 class="section-title">Ready to build?</h2>
+        <p class="section-sub">One command. A complete project. No strings attached.</p>
+        <div class="hero-actions">
+            <a href="/docs/getting-started" class="btn-primary">Get started →</a>
+            <a href="https://github.com/BojanKonjevic/zenit" class="btn-ghost">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                Star on GitHub
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="/docs/getting-started">Documentation</a>
+                <a href="https://github.com/BojanKonjevic/zenit">GitHub</a>
+                <a href="https://github.com/BojanKonjevic/zenit/issues">Issues</a>
+                <a href="https://github.com/BojanKonjevic/zenit/blob/main/CONTRIBUTING.md">Contribute</a>
+                <a href="https://github.com/BojanKonjevic/zenit/blob/main/LICENSE">MIT License</a>
+            </div>
+            <div class="footer-meta">zenit v0.1.0</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Theme
+    const btn = document.getElementById('themeBtn');
+    const icon = document.getElementById('themeIcon');
+    const root = document.documentElement;
+
+    function applyTheme(t) {
+        if (t === 'dark') {
+            root.setAttribute('data-theme', 'dark');
+            icon.textContent = '☾';
+        } else {
+            root.removeAttribute('data-theme');
+            icon.textContent = '☀';
+        }
+        localStorage.setItem('zenit-theme', t);
+    }
+
+    const saved = localStorage.getItem('zenit-theme');
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (sysDark ? 'dark' : 'light'));
+
+    btn.addEventListener('click', () => {
+        applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    // Copy
+    const copyBtn = document.getElementById('copyBtn');
+    copyBtn.addEventListener('click', async () => {
+        await navigator.clipboard.writeText('uv tool install zenit');
+        copyBtn.classList.add('copied');
+        copyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(() => {
+            copyBtn.classList.remove('copied');
+            copyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        }, 2000);
+    });
+
+    // Scroll reveal
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
+
