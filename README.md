@@ -43,6 +43,7 @@ zenit create <name>                scaffold a new project
 zenit add [addon]                  add an addon to the current project
 zenit remove [addon]               remove an addon from the current project
 zenit doctor                       check project health
+zenit doctor --thorough            full fingerprint integrity check
 
 zenit list-templates
 zenit list-addons
@@ -101,7 +102,13 @@ Both commands update `.zenit.toml`, `pyproject.toml`, `justfile`, `compose.yml`,
 zenit doctor
 ```
 
-Checks that all expected files exist, sentinels are intact, dependencies match the installed addons, compose services are present, and env vars are defined. Exits with code 1 if errors are found.
+Checks that all expected files exist, manifest blocks are intact, dependencies match the installed addons, compose services are present, and env vars are defined. Exits with code 1 if errors are found.
+
+```bash
+zenit doctor --thorough
+```
+
+Adds a full fingerprint integrity pass for all Python blocks recorded in the manifest — useful after running a formatter or making manual edits.
 
 ---
 
@@ -125,16 +132,99 @@ Defaults appear as pre-selections in the interactive prompt — you can still ch
 
 ## How zenit tracks your project
 
-Every scaffolded project gets a `.zenit.toml` at the root:
+Every scaffolded project gets a `.zenit.toml` at the root with two sections.
+
+### `[project]` — lockfile
 
 ```toml
 [project]
 template = "fastapi"
 addons = ["docker", "redis"]
 zenit_version = "1.0.8"
+schema_version = 2
 ```
 
 This is the source of truth for `zenit add`, `zenit remove`, and `zenit doctor`. Commit it. Don't edit it manually — use the CLI instead.
+
+### `[manifest]` — injection registry
+
+The manifest is zenit's record of everything it has injected into your project. It is written at scaffold time and updated on every `add` / `remove`. Each entry tracks what was injected, where, and a fingerprint so the code can be located reliably even after formatting.
+
+```toml
+[[manifest.python_blocks]]
+addon = "redis"
+point = "settings_fields"
+file = "src/my_project/config.py"
+lines = "14-14"
+fingerprint = "sha256:abc123..."
+fingerprint_normalised = "sha256:def456..."
+
+[manifest.python_blocks.locator]
+name = "after_last_class_attribute"
+args = {class_name = "Settings"}
+
+[[manifest.env]]
+key = "REDIS_URL"
+source = "addon"
+addon = "redis"
+
+[[manifest.dependencies]]
+package = "redis"
+spec = "redis>=5"
+source = "addon"
+addon = "redis"
+dev = false
+
+[[manifest.just_recipes]]
+name = "redis-up"
+source = "addon"
+addon = "redis"
+```
+
+Do not edit the `[manifest]` section manually. Run `zenit doctor` after making any structural changes to confirm everything is consistent.
+
+---
+
+## How code injection works
+
+When an addon adds code to an existing Python file, zenit uses a **CST + structural locator** pipeline instead of sentinel comments.
+
+### Locators
+
+Each template declares named injection points. A locator is a pure function that receives a parsed `libcst.Module` and returns the body index at which new statements should be inserted. The following locators are available:
+
+| Locator | Description |
+|---|---|
+| `after_last_import` | After the last import statement at module level |
+| `after_last_class_attribute` | After the last field/annotation in a named class |
+| `after_statement_matching` | After the first top-level statement matching a regex |
+| `before_yield_in_function` | Before the `yield` in an async generator (lifespan functions) |
+| `before_return_in_function` | Before the first `return` in a named function |
+| `in_function_body` | Before or after an anchor statement inside a named function |
+| `at_module_end` | Append at the end of the module body |
+| `at_file_end` | Append at the end of a non-Python file |
+
+### File handlers
+
+Injection and removal are dispatched through typed file handlers, one per file type. Each handler knows how to apply a snippet and how to undo it cleanly.
+
+| Handler | Matches | Strategy |
+|---|---|---|
+| `PythonHandler` | `*.py` | libcst parse → locator → line-level splice |
+| `TomlHandler` | `*.toml` | tomlkit round-trip; skips if top-level key already exists |
+| `YamlHandler` | `*.yml`, `*.yaml` | Append; skips if first content key already present |
+| `JustfileHandler` | `justfile` | Append; skips if any recipe name already exists |
+| `EnvHandler` | `.env*` | Append; skips individual keys that are already defined |
+
+### Removal
+
+When an addon is removed, zenit uses the manifest entry to locate the injected block. It tries three stages in order:
+
+1. **Exact fingerprint** — SHA-256 of the canonical libcst output matches the recorded value.
+2. **Normalised fingerprint** — SHA-256 after stripping trailing whitespace and collapsing blank lines; resilient to formatter runs.
+3. **Fuzzy match** — SequenceMatcher similarity ≥ 85 % within a 20-line window around the recorded position; prints a warning when used.
+
+If none of the three stages succeed, zenit prints an error with manual recovery instructions rather than silently corrupting the file.
 
 ---
 

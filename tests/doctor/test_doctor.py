@@ -1,9 +1,4 @@
-"""Tests for scaffolder.doctor — all health check phases.
-
-Sentinel-based checks (_check_sentinels / TestCheckSentinels) were removed
-in the zero-trace manifest migration.  The doctor now uses manifest-driven
-checks; those are tested here and in dedicated handler tests.
-"""
+"""Tests for scaffolder.doctor — all health check phases."""
 
 from __future__ import annotations
 

@@ -3,7 +3,7 @@
 The manifest is the single source of truth for everything zenit has injected
 into a project.  It is written at scaffold time and updated by every
 ``zenit add`` / ``zenit remove``.  ``zenit doctor`` reads it to verify
-integrity without re-scanning source files with sentinels.
+integrity.
 
 Schema version
 --------------
