@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'zenit',
   description: 'Scaffold Python projects without lock-in',
-  base: '/',
+  base: '/zenit/',
   cleanUrls: true,
 
   themeConfig: {
