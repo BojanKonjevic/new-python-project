@@ -7,6 +7,6 @@ layout: page
     You're looking at the docs site.
   </p>
   <p>
-    <a href="/getting-started">Get started →</a>
+    <a href="getting-started">Get started →</a>
   </p>
 </div>

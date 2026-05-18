@@ -27,3 +27,6 @@ result
 
 #npm
 node_modules
+
+#Vitepress cache
+**/.vitepress/cache/
