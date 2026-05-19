@@ -3,7 +3,7 @@
 List available templates and addons, or what is currently installed in the project.
 
 ```
-zenit list [--available | --installed]
+zenit list <--available | --installed>
 ```
 
 ---
