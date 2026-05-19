@@ -1,4 +1,8 @@
-<h1 align="center">zenit</h1>
+<h1 align="center">
+  <a href="https://bojankonjevic.github.io/zenit/" target="_blank">
+    zenit
+  </a>
+</h1>
 
 <p align="center">
   Scaffold Python projects without lock-in. Add what you need. Remove cleanly.
