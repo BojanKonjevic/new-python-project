@@ -129,7 +129,7 @@ cd my-api
 just run
 ```
 
-This starts the Postgres and Redis containers and launches the API server with hot-reload. Open [http://localhost:8000/health](http://localhost:8000/health) to confirm it is running.
+This starts the Postgres and Redis containers and launches the API server with hot-reload. Open `http://localhost:8000/health` to confirm it is running.
 
 Other useful recipes:
 
