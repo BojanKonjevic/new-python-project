@@ -3,7 +3,7 @@
 Add one or more addons to an existing Zenit project.
 
 ```
-zenit add [addon_name]
+zenit add <addon_name>
 ```
 
 Must be run from a directory that contains `.zenit.toml`. Zenit walks up the directory tree to find it, so you can run the command from a subdirectory of the project root.
