@@ -45,8 +45,7 @@ zenit remove [addon]               remove an addon from the current project
 zenit doctor                       check project health
 zenit doctor --thorough            full fingerprint integrity check
 
-zenit list-templates
-zenit list-addons
+zenit list
 zenit config                       show config file path and current settings
 zenit --version
 ```

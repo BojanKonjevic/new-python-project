@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
 """zenit — scaffold Python projects from a template with optional addons."""
 
+from __future__ import annotations
+
+from collections.abc import Sequence
 from importlib.metadata import version as get_version
+from pathlib import Path
 from typing import Annotated
 
 import typer
 
+from scaffolder.addons._registry import get_available_addons
 from scaffolder.addons.add import add_addon
+from scaffolder.cli.prompt._render import TEMPLATES
+from scaffolder.cli.ui import BOLD, CYAN, DIM, GREEN, RED, RESET
 from scaffolder.config.config import config_path, load_config
+from scaffolder.core.lockfile import read_lockfile
 from scaffolder.core.scaffold import scaffold_project
 from scaffolder.doctor.doctor import print_results, run_doctor
+from scaffolder.schema.models import AddonConfig
 
 app = typer.Typer(
     name="zenit",
@@ -43,39 +52,152 @@ def cmd_create(
     scaffold_project(name, dry_run=dry_run)
 
 
-@app.command("list-templates")
-def cmd_list_templates() -> None:
-    """Show available project templates."""
-    from scaffolder.cli.prompt._render import TEMPLATES
-    from scaffolder.cli.ui import CYAN, DIM, RESET
+@app.command("list")
+def cmd_list(
+    available: Annotated[
+        bool,
+        typer.Option(
+            "--available", help="List all templates and addons Zenit knows about"
+        ),
+    ] = False,
+    installed: Annotated[
+        bool,
+        typer.Option(
+            "--installed", help="List what is installed in the current project"
+        ),
+    ] = False,
+) -> None:
+    """List templates and addons — available, installed, or both."""
+    if available and installed:
+        from scaffolder.cli.ui import error
 
-    print()
-    for name, desc in TEMPLATES:
-        print(f"  {CYAN}{name:<12}{RESET}  {DIM}{desc}{RESET}")
-    print()
+        error("--available and --installed are mutually exclusive.")
+        raise typer.Exit(1)
+
+    project_dir = Path.cwd()
+    lockfile = read_lockfile(project_dir)
+
+    if installed:
+        if lockfile is None:
+            from scaffolder.cli.ui import error
+
+            error(
+                "No .zenit.toml found. "
+                "'zenit list --installed' only works inside a Zenit project."
+            )
+            raise typer.Exit(1)
+        _print_installed(lockfile, project_dir)
+        return
+
+    if available or lockfile is None:
+        _print_available(TEMPLATES, get_available_addons())
+        return
+
+    _print_default(lockfile, get_available_addons(), project_dir)
 
 
-@app.command("list-addons")
-def cmd_list_addons() -> None:
-    """Show available addons."""
-    from scaffolder.addons._registry import get_available_addons
-    from scaffolder.cli.ui import CYAN, DIM, RESET
+def _print_available(
+    templates: list[tuple[str, str]],
+    addons: Sequence[AddonConfig],
+) -> None:
+    print(f"\n  {BOLD}Templates{RESET}")
+    for name, desc in templates:
+        print(f"    {CYAN}{name:<14}{RESET}  {DIM}{desc}{RESET}")
 
-    configs = get_available_addons()
-    print()
-    for cfg in configs:
+    print(f"\n  {BOLD}Addons{RESET}")
+    for addon in addons:
         req_suffix = (
-            f"  {DIM}requires: {', '.join(cfg.requires)}{RESET}" if cfg.requires else ""
+            f"  {DIM}requires: {', '.join(addon.requires)}{RESET}"
+            if addon.requires
+            else ""
         )
-        print(f"  {CYAN}{cfg.id:<20}{RESET}  {DIM}{cfg.description}{RESET}{req_suffix}")
+        tmpl_suffix = (
+            f"  {DIM}({', '.join(addon.templates)} only){RESET}"
+            if addon.templates
+            else ""
+        )
+        print(
+            f"    {CYAN}{addon.id:<20}{RESET}  {DIM}{addon.description}{RESET}"
+            f"{req_suffix}{tmpl_suffix}"
+        )
+    print()
+
+
+def _print_installed(
+    lockfile: object,
+    project_dir: Path,
+) -> None:
+    from scaffolder.core.lockfile import ZenitLockfile
+
+    assert isinstance(lockfile, ZenitLockfile)
+
+    version_label = lockfile.zenit_version or "unknown"
+    print(f"\n  {BOLD}Project{RESET}   {project_dir.name}")
+    print(f"  {BOLD}Template{RESET}  {CYAN}{lockfile.template}{RESET}")
+    print(f"  {BOLD}Version{RESET}   {DIM}zenit {version_label}{RESET}")
+
+    if lockfile.addons:
+        print(f"\n  {BOLD}Installed addons{RESET}")
+        for addon_id in lockfile.addons:
+            print(f"    {GREEN}✓{RESET}  {addon_id}")
+    else:
+        print(f"\n  {DIM}No addons installed.{RESET}")
+    print()
+
+
+def _print_default(
+    lockfile: object,
+    addons: Sequence[AddonConfig],
+    project_dir: Path,
+) -> None:
+    from scaffolder.core.lockfile import ZenitLockfile
+
+    assert isinstance(lockfile, ZenitLockfile)
+
+    version_label = lockfile.zenit_version or "unknown"
+    print(f"\n  {BOLD}Project{RESET}   {project_dir.name}")
+    print(f"  {BOLD}Template{RESET}  {CYAN}{lockfile.template}{RESET}")
+    print(f"  {BOLD}Version{RESET}   {DIM}zenit {version_label}{RESET}")
+
+    if lockfile.addons:
+        print(f"\n  {BOLD}Installed{RESET}")
+        for addon_id in lockfile.addons:
+            print(f"    {GREEN}✓{RESET}  {addon_id}")
+    else:
+        print(f"\n  {DIM}No addons installed.{RESET}")
+
+    installed_set = set(lockfile.addons)
+    available_to_add = [
+        addon
+        for addon in addons
+        if addon.id not in installed_set
+        and (not addon.templates or lockfile.template in addon.templates)
+    ]
+
+    if available_to_add:
+        print(f"\n  {BOLD}Available to add{RESET}")
+        for addon in available_to_add:
+            req_parts: list[str] = []
+            for req in addon.requires:
+                if req in installed_set:
+                    req_parts.append(f"{req} {GREEN}(installed){RESET}")
+                else:
+                    req_parts.append(f"{RED}{req} (required){RESET}")
+            req_suffix = (
+                f"  {DIM}Requires: {', '.join(req_parts)}{RESET}" if req_parts else ""
+            )
+            print(
+                f"    {CYAN}{addon.id:<20}{RESET}  {DIM}{addon.description}{RESET}"
+                f"{req_suffix}"
+            )
+    else:
+        print(f"\n  {DIM}All available addons are already installed.{RESET}")
     print()
 
 
 @app.command("config")
 def cmd_config() -> None:
     """Show the config file path and current settings."""
-    from scaffolder.cli.ui import BOLD, CYAN, DIM, GREEN, RESET
-
     path = config_path()
     cfg = load_config()
 
@@ -122,12 +244,10 @@ def cmd_add(
     Run without arguments to select addons interactively.
     """
     if addon is None:
-        # Interactive mode — show the TUI to pick addons
         from scaffolder.addons.add import add_addon_interactive
 
         add_addon_interactive(dry_run=dry_run)
     else:
-        # Direct mode — add the specified addon
         add_addon(addon, dry_run=dry_run)
 
 
@@ -174,15 +294,12 @@ def cmd_doctor(
     ] = False,
 ) -> None:
     """Check that the current project matches zenit's expectations."""
-    from pathlib import Path
-
-    from scaffolder.cli.ui import DIM, RESET, error, success
-    from scaffolder.core.lockfile import read_lockfile
-
     project_dir = Path.cwd()
     lockfile = read_lockfile(project_dir)
 
     if lockfile is None:
+        from scaffolder.cli.ui import error
+
         error(
             "No .zenit.toml found. 'zenit doctor' only works in projects scaffolded by zenit."
         )
@@ -202,9 +319,13 @@ def cmd_doctor(
 
     print()
     if has_errors:
+        from scaffolder.cli.ui import error
+
         error("Project has issues that may prevent zenit commands from working.")
         raise typer.Exit(1)
     else:
+        from scaffolder.cli.ui import success
+
         success("Project looks healthy.")
     print()
 
