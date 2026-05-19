@@ -8,63 +8,69 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /*
+          Default: dark (warm dark editorial).
+          Light: warm cream editorial with high-contrast amber — matches docs theme.
+          JS applies [data-theme="light"] on user toggle or system preference.
+        */
         :root {
-            --bg: #f7f6f2;
-            --bg-elevated: #ffffff;
-            --bg-code: #efede8;
-            --text-primary: #18181a;
-            --text-secondary: #42414a;
-            --text-tertiary: #65636e;
-            --text-muted: #9997a3;
-            --border: #dddad3;
-            --border-light: #e8e5df;
-            --accent: #18181a;
-            --accent-hover: #000;
-            --accent-muted: rgba(24,24,26,0.05);
-            --accent-warm: #7a6248;
-            --accent-warm-muted: rgba(122,98,72,0.09);
-            --terminal-bg: #171614;
-            --terminal-border: #2a2825;
-            --terminal-text: #c8c5be;
-            --terminal-prompt: #b89a72;
-            --terminal-highlight: #82b07a;
-            --terminal-info: #6ea4c0;
-            --terminal-dim: #585550;
-            --nav-bg: rgba(247,246,242,0.94);
-            --check: #3a7040;
-            --cross: #8f4040;
+            --bg:               #0f0e0c;
+            --bg-elevated:      #1c1a16;
+            --bg-code:          #181612;
+            --text-primary:     #e8e3da;
+            --text-secondary:   #b8b0a0;
+            --text-tertiary:    #7a7268;
+            --text-muted:       #4e4840;
+            --border:           #2a2620;
+            --border-light:     #221f1a;
+            --accent:           #e8e3da;
+            --accent-hover:     #ffffff;
+            --accent-muted:     rgba(232,227,218,0.06);
+            --accent-warm:      #d4a264;
+            --accent-warm-muted:rgba(212,162,100,0.12);
+            --terminal-bg:      #0a0908;
+            --terminal-border:  #1e1c18;
+            --terminal-text:    #c4c0b8;
+            --terminal-prompt:  #d4a264;
+            --terminal-ok:      #82b07a;
+            --terminal-info:    #7aafc6;
+            --terminal-dim:     #4a4640;
+            --nav-bg:           rgba(15,14,12,0.92);
+            --check:            #6aaa62;
+            --cross:            #b87070;
         }
 
-        [data-theme="dark"] {
-            --bg: #111110;
-            --bg-elevated: #191917;
-            --bg-code: #1e1c1a;
-            --text-primary: #eeece8;
-            --text-secondary: #b0ada6;
-            --text-tertiary: #7a7872;
-            --text-muted: #55534e;
-            --border: #282622;
-            --border-light: #201e1c;
-            --accent: #dedad4;
-            --accent-hover: #f5f2ed;
-            --accent-muted: rgba(238,236,232,0.05);
-            --accent-warm: #c09a70;
-            --accent-warm-muted: rgba(192,154,112,0.10);
-            --terminal-bg: #0c0b0a;
-            --terminal-border: #232120;
-            --terminal-text: #c4c1ba;
-            --terminal-prompt: #b89a72;
-            --terminal-highlight: #8fba86;
-            --terminal-info: #7aafc6;
-            --terminal-dim: #4e4c48;
-            --nav-bg: rgba(17,17,16,0.94);
-            --check: #6aaa62;
-            --cross: #b87070;
+        [data-theme="light"] {
+            --bg:               #faf8f4;
+            --bg-elevated:      #ffffff;
+            --bg-code:          #f2ede5;
+            --text-primary:     #1a1714;
+            --text-secondary:   #3d3830;
+            --text-tertiary:    #6b6358;
+            --text-muted:       #a09888;
+            --border:           #d8d0c4;
+            --border-light:     #e4ddd4;
+            --accent:           #1a1714;
+            --accent-hover:     #000000;
+            --accent-muted:     rgba(26,23,20,0.05);
+            --accent-warm:      #8a5c2e;
+            --accent-warm-muted:rgba(138,92,46,0.10);
+            --terminal-bg:      #1a1714;
+            --terminal-border:  #2a2620;
+            --terminal-text:    #c4c0b8;
+            --terminal-prompt:  #d4a264;
+            --terminal-ok:      #82b07a;
+            --terminal-info:    #7aafc6;
+            --terminal-dim:     #4a4640;
+            --nav-bg:           rgba(250,248,244,0.94);
+            --check:            #3a6e34;
+            --cross:            #8f3c3c;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; color-scheme: dark; }
+        [data-theme="light"] html,
+        html[data-theme="light"] { color-scheme: light; }
 
         body {
             font-family: 'Instrument Sans', -apple-system, sans-serif;
@@ -73,7 +79,7 @@
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background 0.25s, color 0.25s;
+            transition: background 0.2s, color 0.2s;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -83,7 +89,8 @@
             padding: 0 2rem;
         }
 
-        /* Nav */
+        /* ── Nav ─────────────────────────────────────────────────────── */
+
         .nav {
             position: sticky;
             top: 0;
@@ -97,7 +104,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: background 0.25s, border-color 0.25s;
+            transition: background 0.2s, border-color 0.2s;
         }
 
         .logo {
@@ -107,11 +114,7 @@
             letter-spacing: -0.025em;
         }
 
-        .logo a {
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: opacity 0.15s;
-        }
+        .logo a { text-decoration: none; color: var(--text-primary); transition: opacity 0.15s; }
         .logo a:hover { opacity: 0.5; }
 
         .nav-right {
@@ -125,7 +128,6 @@
             color: var(--text-tertiary);
             font-size: 0.8rem;
             font-weight: 500;
-            letter-spacing: 0.01em;
             transition: color 0.15s;
         }
         .nav-link:hover { color: var(--text-primary); }
@@ -146,10 +148,9 @@
         }
         .theme-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
 
-        /* Hero */
-        .hero {
-            padding: 5.5rem 0 2rem;
-        }
+        /* ── Hero ────────────────────────────────────────────────────── */
+
+        .hero { padding: 5.5rem 0 2rem; }
 
         .hero-eyebrow {
             display: inline-flex;
@@ -212,10 +213,9 @@
             font-weight: 500;
             letter-spacing: 0.01em;
             border: 1px solid var(--accent);
-            transition: background 0.15s, transform 0.15s;
+            transition: opacity 0.15s, transform 0.15s;
         }
-        [data-theme="dark"] .btn-primary { color: #111110; }
-        .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
 
         .btn-ghost {
             display: inline-flex;
@@ -228,16 +228,14 @@
             text-decoration: none;
             font-size: 0.8rem;
             font-weight: 500;
-            letter-spacing: 0.01em;
             border: 1px solid var(--border);
             transition: color 0.15s, border-color 0.15s, background 0.15s;
         }
         .btn-ghost:hover { color: var(--text-primary); border-color: var(--text-muted); background: var(--accent-muted); }
 
-        /* Install strip */
-        .install-strip {
-            margin: 2.5rem 0;
-        }
+        /* ── Install strip ───────────────────────────────────────────── */
+
+        .install-strip { margin: 2.5rem 0; }
 
         .install-pill {
             display: inline-flex;
@@ -252,10 +250,7 @@
             transition: border-color 0.15s;
         }
         .install-pill:hover { border-color: var(--text-muted); }
-
-        .install-pill code {
-            color: var(--text-secondary);
-        }
+        .install-pill code { color: var(--text-secondary); }
 
         .copy-btn {
             background: none;
@@ -269,16 +264,17 @@
             transition: color 0.15s;
         }
         .copy-btn:hover { color: var(--text-primary); }
-        .copy-btn.copied { color: var(--terminal-highlight); }
+        .copy-btn.copied { color: var(--terminal-ok); }
 
-        /* Terminal */
+        /* ── Terminal ────────────────────────────────────────────────── */
+
         .terminal {
             background: var(--terminal-bg);
             border: 1px solid var(--terminal-border);
             border-radius: 9px;
             overflow: hidden;
             margin: 0 0 4rem;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.15);
         }
 
         .terminal-chrome {
@@ -316,17 +312,17 @@
             animation: fadeUp 0.3s ease forwards;
         }
 
-        .tl:nth-child(1)  { animation-delay: 0.1s; }
+        .tl:nth-child(1)  { animation-delay: 0.10s; }
         .tl:nth-child(2)  { animation-delay: 0.35s; }
         .tl:nth-child(3)  { animation-delay: 0.55s; }
         .tl:nth-child(4)  { animation-delay: 0.75s; }
         .tl:nth-child(5)  { animation-delay: 0.95s; }
         .tl:nth-child(6)  { animation-delay: 1.15s; }
-        .tl:nth-child(7)  { animation-delay: 1.5s; }
+        .tl:nth-child(7)  { animation-delay: 1.50s; }
         .tl:nth-child(8)  { animation-delay: 1.75s; }
-        .tl:nth-child(9)  { animation-delay: 2.0s; }
+        .tl:nth-child(9)  { animation-delay: 2.00s; }
         .tl:nth-child(10) { animation-delay: 2.25s; }
-        .tl:nth-child(11) { animation-delay: 2.5s; }
+        .tl:nth-child(11) { animation-delay: 2.50s; }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(3px); }
@@ -336,7 +332,7 @@
         .t-prompt { color: var(--terminal-prompt); flex-shrink: 0; }
         .t-cmd    { color: var(--terminal-text); }
         .t-dim    { color: var(--terminal-dim); padding-left: 1.25rem; }
-        .t-ok     { color: var(--terminal-highlight); }
+        .t-ok     { color: var(--terminal-ok); }
         .t-arrow  { color: var(--terminal-info); }
         .t-info   { color: var(--terminal-text); padding-left: 1.25rem; }
         .t-blank  { height: 0.5rem; }
@@ -355,14 +351,8 @@
             50%      { opacity: 0; }
         }
 
-        /* Divider */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 0;
-        }
+        /* ── Sections ────────────────────────────────────────────────── */
 
-        /* Sections */
         .section {
             padding: 3.5rem 0;
             border-bottom: 1px solid var(--border);
@@ -372,7 +362,7 @@
         .section-kicker {
             font-family: 'Geist Mono', monospace;
             font-size: 0.65rem;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.10em;
             text-transform: uppercase;
             color: var(--text-muted);
             margin-bottom: 0.625rem;
@@ -396,7 +386,8 @@
             margin-bottom: 2rem;
         }
 
-        /* Comparison */
+        /* ── Comparison table ────────────────────────────────────────── */
+
         .compare-table {
             width: 100%;
             border-collapse: collapse;
@@ -431,12 +422,8 @@
         .compare-table .yes { color: var(--check); font-weight: 600; }
         .compare-table .no  { color: var(--cross); font-weight: 500; }
 
-        .compare-table .highlight-row td {
-            background: var(--accent-muted);
-        }
-        .compare-table .highlight-row td:first-child {
-            font-weight: 600;
-        }
+        .compare-table .highlight-row td { background: var(--accent-muted); }
+        .compare-table .highlight-row td:first-child { font-weight: 600; }
 
         .compare-note {
             margin-top: 0.875rem;
@@ -452,7 +439,8 @@
             color: var(--accent-warm);
         }
 
-        /* Feature grid */
+        /* ── Feature grid ────────────────────────────────────────────── */
+
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -466,10 +454,7 @@
             padding: 1.25rem;
             transition: border-color 0.2s, transform 0.2s;
         }
-        .feature-card:hover {
-            border-color: var(--text-muted);
-            transform: translateY(-2px);
-        }
+        .feature-card:hover { border-color: var(--accent-warm); transform: translateY(-2px); }
 
         .feature-icon {
             font-size: 1.1rem;
@@ -492,7 +477,8 @@
             line-height: 1.65;
         }
 
-        /* Ops grid */
+        /* ── Ops grid ────────────────────────────────────────────────── */
+
         .ops-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -506,10 +492,7 @@
             padding: 1.125rem 1.25rem;
             transition: border-color 0.2s, transform 0.2s;
         }
-        .ops-card:hover {
-            border-color: var(--text-muted);
-            transform: translateY(-1px);
-        }
+        .ops-card:hover { border-color: var(--accent-warm); transform: translateY(-1px); }
 
         .ops-cmd {
             font-family: 'Geist Mono', monospace;
@@ -526,7 +509,8 @@
             line-height: 1.65;
         }
 
-        /* Components */
+        /* ── Component tags ──────────────────────────────────────────── */
+
         .component-box {
             background: var(--bg-elevated);
             border: 1px solid var(--border);
@@ -534,7 +518,6 @@
             padding: 1rem 1.25rem;
             margin-top: 0.75rem;
         }
-
         .component-box + .component-box { margin-top: 0.625rem; }
 
         .component-label {
@@ -547,11 +530,7 @@
             font-weight: 500;
         }
 
-        .tag-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.375rem;
-        }
+        .tag-row { display: flex; flex-wrap: wrap; gap: 0.375rem; }
 
         .tag {
             font-family: 'Geist Mono', monospace;
@@ -564,19 +543,20 @@
             transition: color 0.15s, border-color 0.15s;
             cursor: default;
         }
-        .tag:hover { color: var(--text-secondary); border-color: var(--text-muted); }
+        .tag:hover { color: var(--accent-warm); border-color: var(--accent-warm); }
 
-        /* CTA */
+        /* ── CTA ─────────────────────────────────────────────────────── */
+
         .cta-section {
             padding: 4rem 0 2.5rem;
             text-align: center;
         }
-
         .cta-section .section-title { margin: 0 auto 0.625rem; }
         .cta-section .section-sub   { margin: 0 auto 2rem; }
         .cta-section .hero-actions  { justify-content: center; }
 
-        /* Footer */
+        /* ── Footer ──────────────────────────────────────────────────── */
+
         .footer {
             padding: 2.5rem 0 3rem;
             border-top: 1px solid var(--border);
@@ -590,11 +570,7 @@
             gap: 1rem;
         }
 
-        .footer-links {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
+        .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 
         .footer-links a {
             color: var(--text-muted);
@@ -610,18 +586,17 @@
             color: var(--text-muted);
         }
 
-        /* Reveal */
+        /* ── Scroll reveal ───────────────────────────────────────────── */
+
         .reveal {
             opacity: 0;
             transform: translateY(16px);
             transition: opacity 0.55s ease, transform 0.55s ease;
         }
-        .reveal.visible {
-            opacity: 1;
-            transform: none;
-        }
+        .reveal.visible { opacity: 1; transform: none; }
 
-        /* Mobile */
+        /* ── Mobile ──────────────────────────────────────────────────── */
+
         @media (max-width: 680px) {
             .hero { padding: 3.5rem 0 1.5rem; }
             .hero h1 { font-size: 1.85rem; }
@@ -650,7 +625,6 @@
 
 <div class="container">
 
-    <!-- Hero -->
     <div class="hero">
         <div class="hero-eyebrow">
             <span class="hero-eyebrow-dot"></span>
@@ -669,7 +643,6 @@
         </div>
     </div>
 
-    <!-- Install -->
     <div class="install-strip">
         <div class="install-pill">
             <code>$ uv tool install zenit</code>
@@ -679,7 +652,6 @@
         </div>
     </div>
 
-    <!-- Terminal -->
     <div class="terminal">
         <div class="terminal-chrome">
             <div class="tc tc-r"></div>
@@ -702,7 +674,6 @@
         </div>
     </div>
 
-    <!-- Comparison -->
     <div class="section reveal">
         <div class="section-kicker">Comparison</div>
         <h2 class="section-title">Why Zenit?</h2>
@@ -755,7 +726,6 @@
         </p>
     </div>
 
-    <!-- Architecture -->
     <div class="section reveal">
         <div class="section-kicker">Architecture</div>
         <h2 class="section-title">How it works</h2>
@@ -780,7 +750,6 @@
         </div>
     </div>
 
-    <!-- Operations -->
     <div class="section reveal">
         <div class="section-kicker">Operations</div>
         <h2 class="section-title">Stay in control</h2>
@@ -806,7 +775,6 @@
         </div>
     </div>
 
-    <!-- Trust -->
     <div class="section reveal">
         <div class="section-kicker">Trust</div>
         <h2 class="section-title">Built to be transparent</h2>
@@ -831,7 +799,6 @@
         </div>
     </div>
 
-    <!-- Components -->
     <div class="section reveal">
         <div class="section-kicker">Components</div>
         <h2 class="section-title">What's included</h2>
@@ -858,7 +825,6 @@
         </div>
     </div>
 
-    <!-- CTA -->
     <div class="cta-section reveal">
         <h2 class="section-title">Ready to build?</h2>
         <p class="section-sub">One command. A complete project. No strings attached.</p>
@@ -871,7 +837,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <div class="footer">
         <div class="footer-inner">
             <div class="footer-links">
@@ -881,38 +846,44 @@
                 <a href="https://github.com/BojanKonjevic/zenit/blob/main/CONTRIBUTING.md">Contribute</a>
                 <a href="https://github.com/BojanKonjevic/zenit/blob/main/LICENSE">MIT License</a>
             </div>
-            <div class="footer-meta">zenit v0.1.0</div>
+            <div class="footer-meta">zenit v1.0.9</div>
         </div>
     </div>
 
 </div>
 
 <script>
-    // Theme
     const btn = document.getElementById('themeBtn');
     const icon = document.getElementById('themeIcon');
-    const root = document.documentElement;
 
     function applyTheme(t) {
-        if (t === 'dark') {
-            root.setAttribute('data-theme', 'dark');
+        if (t === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
             icon.textContent = '☾';
         } else {
-            root.removeAttribute('data-theme');
+            document.documentElement.removeAttribute('data-theme');
             icon.textContent = '☀';
         }
         localStorage.setItem('zenit-theme', t);
     }
 
+    // Default: dark. Only switch to light if user previously chose it,
+    // or if they have no saved preference AND prefer light system-wide.
     const saved = localStorage.getItem('zenit-theme');
-    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved || (sysDark ? 'dark' : 'light'));
+    if (saved) {
+        applyTheme(saved);
+    } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+        applyTheme('light');
+    } else {
+        applyTheme('dark');
+    }
 
     btn.addEventListener('click', () => {
-        applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        const current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'light' ? 'dark' : 'light');
     });
 
-    // Copy
+    // Copy button
     const copyBtn = document.getElementById('copyBtn');
     copyBtn.addEventListener('click', async () => {
         await navigator.clipboard.writeText('uv tool install zenit');
@@ -932,4 +903,3 @@
 </script>
 </body>
 </html>
-
