@@ -1,4 +1,4 @@
-# Template: blank
+# blank
 
 The `blank` template produces a minimal Python package — a working entry point, a passing test, and a full set of dev tooling. It has no framework, no database, and no service dependencies. Everything Zenit adds is removable.
 
@@ -119,8 +119,3 @@ The base recipes (`test`, `lint`, `fmt`, `fix`, `check`) are generated for all t
 
 **Windows:** `.envrc` and `shell.nix` are not written. The environment is managed entirely by `uv` and every recipe runs through `uv run`.
 
----
-
-## Removing Zenit from a blank project
-
-Delete `.zenit.toml`. The project continues to work. `main.py`, `pyproject.toml`, and the justfile have no dependency on Zenit at runtime.
