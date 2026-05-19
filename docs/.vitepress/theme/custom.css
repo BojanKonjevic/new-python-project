@@ -6,7 +6,7 @@
   --vp-font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --vp-font-family-mono: 'Geist Mono', 'JetBrains Mono', monospace;
 
-  /* Light palette — default (no .dark class) */
+  /* Light palette */
   --vp-c-brand-1: #8a5c2e;
   --vp-c-brand-2: #7a4e22;
   --vp-c-brand-3: #a06830;
@@ -29,12 +29,10 @@
   --vp-nav-bg-color: rgba(245, 242, 236, 0.94);
   --vp-sidebar-bg-color: #f5f2ec;
 
-  /* Inline code */
   --vp-c-code-inline: #8a5c2e;
   --vp-c-code-inline-bg: rgba(138, 92, 46, 0.10);
 
-  /* Code block surface */
-  --vp-code-block-bg: #ede6dc;
+  --vp-code-block-bg: #eae3d8;
   --vp-code-block-border: #d5cdc0;
 }
 
@@ -46,29 +44,27 @@ html.dark {
   --vp-c-brand-3: #e8bc84;
   --vp-c-brand-soft: rgba(212, 162, 100, 0.14);
 
-  --vp-c-bg: #0f0e0c;
-  --vp-c-bg-soft: #181612;
-  --vp-c-bg-elv: #1c1a16;
-  --vp-c-bg-alt: #181612;
+  --vp-c-bg: #18160f;
+  --vp-c-bg-soft: #201e16;
+  --vp-c-bg-elv: #252218;
+  --vp-c-bg-alt: #201e16;
 
   --vp-c-text-1: #e8e3da;
   --vp-c-text-2: #d0c8b8;
   --vp-c-text-3: #a09888;
 
-  --vp-c-divider: #2a2620;
-  --vp-c-border: #2a2620;
-  --vp-c-gutter: #0f0e0c;
+  --vp-c-divider: #302c22;
+  --vp-c-border: #302c22;
+  --vp-c-gutter: #18160f;
 
-  --vp-nav-bg-color: rgba(15, 14, 12, 0.92);
-  --vp-sidebar-bg-color: #0f0e0c;
+  --vp-nav-bg-color: rgba(24, 22, 15, 0.92);
+  --vp-sidebar-bg-color: #18160f;
 
-  /* Inline code */
   --vp-c-code-inline: #d4a264;
   --vp-c-code-inline-bg: rgba(212, 162, 100, 0.12);
 
-  /* Code block surface */
-  --vp-code-block-bg: #141210;
-  --vp-code-block-border: #2e2a24;
+  --vp-code-block-bg: #1e1b13;
+  --vp-code-block-border: #312d22;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
@@ -186,17 +182,20 @@ body {
   border-radius: 9px !important;
 }
 
-/* Light: subtle shadow */
 html:not(.dark) .vp-doc div[class*='language-'] {
   box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 
-/* Dark: deep theatrical shadow */
 html.dark .vp-doc div[class*='language-'] {
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.12) !important;
 }
 
 .vp-doc div[class*='language-'] pre {
+  background-color: transparent !important;
+}
+
+/* Shiki bakes bg into the pre style attr — neutralise it */
+.vp-doc div[class*='language-'] pre.shiki {
   background-color: transparent !important;
 }
 
@@ -204,24 +203,17 @@ html.dark .vp-doc div[class*='language-'] {
   font-family: 'Geist Mono', monospace !important;
   font-size: 11px !important;
   font-weight: 500 !important;
-  color: #6a6460 !important;
   letter-spacing: 0.04em !important;
 }
 
-html:not(.dark) .vp-doc div[class*='language-'] > span.lang {
-  color: #8a8278 !important;
-}
+html:not(.dark) .vp-doc div[class*='language-'] > span.lang { color: #8a8278 !important; }
+html.dark       .vp-doc div[class*='language-'] > span.lang { color: #6a6050 !important; }
 
 .vp-doc div[class*='language-'] > button.copy {
   border-color: var(--vp-code-block-border) !important;
 }
-
 .vp-doc div[class*='language-'] > button.copy:hover {
-  border-color: #d4a264 !important;
-}
-
-html:not(.dark) .vp-doc div[class*='language-'] > button.copy:hover {
-  border-color: #8a5c2e !important;
+  border-color: var(--vp-c-brand-1) !important;
 }
 
 .vp-doc div[class*='language-'] code {
@@ -233,177 +225,100 @@ html:not(.dark) .vp-doc div[class*='language-'] > button.copy:hover {
 }
 
 /* ─── Syntax token overrides ─────────────────────────────────────────────── */
-/* Remap Shiki's github-light / github-dark to the zenit warm palette.        */
+/*
+  VitePress calls Shiki with `defaultColor: false`, which means spans have
+  NO `color:` property at all. Instead every span gets two CSS custom
+  properties:
 
-/* Base text color for all code */
-html:not(.dark) .vp-doc div[class*='language-'] code {
-  color: #1a1714 !important;
+    <span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">uv</span>
+
+  VitePress then applies color via its own stylesheet:
+    html:not(.dark) .vp-code span { color: var(--shiki-light, inherit); }
+    .dark           .vp-code span { color: var(--shiki-dark,  inherit); }
+
+  So we must:
+    1. Match on `--shiki-light` (NOT `color:`)
+    2. Override BOTH --shiki-light and --shiki-dark on the same rule
+
+  Verified token map (from actual Shiki dual-theme output):
+  ┌──────────────────────┬──────────────────────┬──────────────────────┐
+  │ Role                 │ --shiki-light        │ --shiki-dark         │
+  ├──────────────────────┼──────────────────────┼──────────────────────┤
+  │ Keywords / operators │ #6F42C1  ← NOTE:     │ #B392F0              │
+  │                      │ bash cmds get this   │                      │
+  │ Keywords (python)    │ #D73A49              │ #F97583              │
+  │ Strings              │ #032F62              │ #9ECBFF              │
+  │ Numbers / types      │ #005CC5              │ #79B8FF              │
+  │ Attrs / props        │ #E36209              │ #FFAB70              │
+  │ Comments             │ #6A737D              │ #6A737D (same)       │
+  │ Base text            │ #24292E              │ #E1E4E8              │
+  └──────────────────────┴──────────────────────┴──────────────────────┘
+
+  Zenit warm palette:
+  #6F42C1 → terracotta   #7a4520  /  #c8915a
+  #D73A49 → amber-brown  #8a5c2e  /  #d4a264
+  #032F62 → sage green   #4a6e3c  /  #8faa8b
+  #005CC5 → deep amber   #7a5820  /  #c4a060
+  #E36209 → warm sienna  #8a4820  /  #c87840
+  #6A737D → warm muted italic
+  #24292E → warm ink / cream
+*/
+
+/* ── Functions / bash command names  (--shiki-light:#6F42C1) ─────────────── */
+
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#6F42C1'],
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#6f42c1'] {
+  --shiki-light: #7a4520 !important;
+  --shiki-dark:  #c8915a !important;
 }
 
-html.dark .vp-doc div[class*='language-'] code {
-  color: #d8d4cc !important;
+/* ── Keywords / operators  (--shiki-light:#D73A49) ───────────────────────── */
+
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#D73A49'],
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#d73a49'] {
+  --shiki-light: #8a5c2e !important;
+  --shiki-dark:  #d4a264 !important;
 }
 
-/* ─── Light mode specific remaps ────────────────────────────────────────── */
+/* ── Strings  (--shiki-light:#032F62) ────────────────────────────────────── */
 
-/* Strings → sage green */
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#032f62'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #032f62'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#032F62'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #032F62'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0a3069'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0a3069'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0A3069'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0A3069'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0969da'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0969da'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0969DA'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0969DA'] {
-  color: #4a6e3c !important;
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#032F62'],
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#032f62'] {
+  --shiki-light: #4a6e3c !important;
+  --shiki-dark:  #8faa8b !important;
 }
 
-/* Keywords, types, builtins, functions, numbers, constants, tags, attrs → amber-brown */
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#cf222e'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #cf222e'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#CF222E'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #CF222E'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#d73a49'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #d73a49'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#D73A49'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #D73A49'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#953800'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #953800'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#B35900'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #B35900'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#e36209'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #e36209'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#E36209'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #E36209'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6f42c1'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6f42c1'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6F42C1'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6F42C1'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8250df'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8250df'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8250DF'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8250DF'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8a63d2'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8a63d2'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8A63D2'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8A63D2'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#005cc5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #005cc5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#005CC5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #005CC5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0366d6'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0366d6'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0366D6'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0366D6'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0550ae'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0550ae'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0550AE'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0550AE'] {
-  color: #8a5c2e !important;
+/* ── Numbers / flags / types  (--shiki-light:#005CC5) ───────────────────── */
+
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#005CC5'],
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#005cc5'] {
+  --shiki-light: #7a5820 !important;
+  --shiki-dark:  #c4a060 !important;
 }
 
-/* Comments → warm gray italic */
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6e7781'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6e7781'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6E7781'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6E7781'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#959da5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #959da5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#959DA5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #959DA5'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8c959f'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8c959f'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8C959F'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8C959F'] {
-  color: #8a8278 !important;
+/* ── Attributes / properties  (--shiki-light:#E36209) ───────────────────── */
+
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#E36209'],
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#e36209'] {
+  --shiki-light: #8a4820 !important;
+  --shiki-dark:  #c87840 !important;
+}
+
+/* ── Comments  (--shiki-light:#6A737D — same in both themes) ────────────── */
+
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#6A737D'],
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#6a737d'] {
+  --shiki-light: #8a8278 !important;
+  --shiki-dark:  #5c5448 !important;
   font-style: italic !important;
 }
 
-/* Default text / variables → dark ink */
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#24292f'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #24292f'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#24292F'],
-html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #24292F'] {
-  color: #1a1714 !important;
-}
+/* ── Base text / plain identifiers  (--shiki-light:#24292E) ─────────────── */
 
-/* ─── Dark mode specific remaps ─────────────────────────────────────────── */
-
-/* Strings → sage */
-html.dark .vp-doc div[class*='language-'] span[style*='color:#a5d6ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #a5d6ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#A5D6FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #A5D6FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#79c0ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #79c0ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#79C0FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #79C0FF'] {
-  color: #8faa8b !important;
-}
-
-/* Keywords, types, builtins, functions, numbers, constants, tags, attrs → amber */
-html.dark .vp-doc div[class*='language-'] span[style*='color:#ff7b72'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #ff7b72'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#FF7B72'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #FF7B72'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#f85149'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #f85149'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#F85149'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #F85149'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#ffa657'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #ffa657'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#FFA657'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #FFA657'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#f0883e'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #f0883e'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#F0883E'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #F0883E'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#e3b341'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #e3b341'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#E3B341'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #E3B341'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#d2a8ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #d2a8ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#D2A8FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #D2A8FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#bc8cff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #bc8cff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#BC8CFF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #BC8CFF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#58a6ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #58a6ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#58A6FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #58A6FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#96d0ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #96d0ff'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#96D0FF'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #96D0FF'] {
-  color: #d4a264 !important;
-}
-
-/* Comments → warm gray italic */
-html.dark .vp-doc div[class*='language-'] span[style*='color:#8b949e'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #8b949e'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#8B949E'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #8B949E'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#6e7681'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #6e7681'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#6E7681'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #6E7681'] {
-  color: #5a5450 !important;
-  font-style: italic !important;
-}
-
-/* Default text / variables → warm light */
-html.dark .vp-doc div[class*='language-'] span[style*='color:#c9d1d9'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #c9d1d9'],
-html.dark .vp-doc div[class*='language-'] span[style*='color:#C9D1D9'],
-html.dark .vp-doc div[class*='language-'] span[style*='color: #C9D1D9'] {
-  color: #d8d4cc !important;
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#24292E'],
+.vp-doc div[class*='language-'] span[style*='--shiki-light:#24292e'] {
+  --shiki-light: #1a1714 !important;
+  --shiki-dark:  #d8d4cc !important;
 }
 
 /* ─── Callouts ────────────────────────────────────────────────────────────── */
@@ -412,25 +327,20 @@ html.dark .vp-doc div[class*='language-'] span[style*='color: #C9D1D9'] {
   border-radius: 8px !important;
   border-left-width: 2px !important;
 }
-
 .vp-doc .custom-block.tip {
   background-color: var(--vp-c-brand-soft) !important;
   border-color: var(--vp-c-brand-1) !important;
 }
-
 .vp-doc .custom-block.warning {
   background-color: rgba(160, 100, 48, 0.08) !important;
 }
-
 .vp-doc .custom-block.info {
   background-color: var(--vp-c-bg-soft) !important;
 }
 
 /* ─── Tables ──────────────────────────────────────────────────────────────── */
 
-.vp-doc table {
-  font-size: 0.9rem !important;
-}
+.vp-doc table { font-size: 0.9rem !important; }
 
 .vp-doc thead th {
   font-family: 'Instrument Sans', sans-serif !important;
@@ -441,12 +351,7 @@ html.dark .vp-doc div[class*='language-'] span[style*='color: #C9D1D9'] {
   color: var(--vp-c-text-3) !important;
 }
 
-/* ─── Default to light ─────────────────────────────────────────────────────── */
+/* ─── Color scheme ─────────────────────────────────────────────────────────── */
 
-html {
-  color-scheme: light;
-}
-
-html.dark {
-  color-scheme: dark;
-}
+html      { color-scheme: light; }
+html.dark { color-scheme: dark; }
