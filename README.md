@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/BojanKonjevic/zenit/main/docs/public/logo.svg" alt="zenit" width="120">
-</p>
-
 <h1 align="center">zenit</h1>
 
 <p align="center">
