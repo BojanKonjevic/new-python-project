@@ -51,14 +51,16 @@ export default defineConfig({
         text: 'Templates',
         collapsed: false,
         items: [
+          { text: 'Overview', link: '/templates/' },
           { text: 'blank', link: '/templates/blank' },
-          { text: 'FastAPI', link: '/templates/fastapi' },
+          { text: 'fastapi', link: '/templates/fastapi' },
         ],
       },
       {
         text: 'Addons',
         collapsed: false,
         items: [
+          { text: 'Overview', link: '/addons/' },
           { text: 'auth-manual', link: '/addons/auth-manual' },
           { text: 'celery', link: '/addons/celery' },
           { text: 'docker', link: '/addons/docker' },
