@@ -48,11 +48,23 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Templates & Addons',
+        text: 'Templates',
         collapsed: false,
         items: [
-          { text: 'Templates', link: '/templates/' },
-          { text: 'Addons', link: '/addons/' },
+          { text: 'blank', link: '/templates/blank' },
+          { text: 'FastAPI', link: '/templates/fastapi' },
+        ],
+      },
+      {
+        text: 'Addons',
+        collapsed: false,
+        items: [
+          { text: 'auth-manual', link: '/addons/auth-manual' },
+          { text: 'celery', link: '/addons/celery' },
+          { text: 'docker', link: '/addons/docker' },
+          { text: 'github-actions', link: '/addons/github-actions' },
+          { text: 'redis', link: '/addons/redis' },
+          { text: 'sentry', link: '/addons/sentry' },
         ],
       },
       {

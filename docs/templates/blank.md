@@ -1,0 +1,126 @@
+# Template: blank
+
+The `blank` template produces a minimal Python package — a working entry point, a passing test, and a full set of dev tooling. It has no framework, no database, and no service dependencies. Everything Zenit adds is removable.
+
+---
+
+## When to use it
+
+Choose `blank` when you are building a CLI tool, a script, a library, or any project that does not need a web framework. If you later decide you need FastAPI, re-scaffold with the `fastapi` template — `blank` is not upgradeable in place.
+
+---
+
+## What gets generated
+
+```
+my-project/
+├── .zenit.toml                  # Zenit's manifest — tracks what was generated
+├── pyproject.toml               # Project metadata and dependencies
+├── justfile                     # Task runner recipes
+├── .env                         # Local environment variables (not committed)
+├── .envrc                       # direnv hook — auto-activates the virtualenv on cd
+├── .gitignore
+├── .gitattributes
+├── .pre-commit-config.yaml      # Ruff lint, ruff format, mypy on every commit
+├── shell.nix                    # NixOS only — provides libstdc++
+├── my_project/
+│   ├── __init__.py              # Package version string
+│   ├── __main__.py              # Allows python -m my_project
+│   └── main.py                  # Entry point: main() function
+└── tests/
+    └── test_main.py             # Smoke test for main()
+```
+
+The `_common/` files (`.gitignore`, `.gitattributes`, `.envrc`, `.pre-commit-config.yaml`, `shell.nix`) are applied to every project regardless of template. They are documented here for completeness but are not unique to `blank`.
+
+---
+
+## Entry point
+
+`main.py` exports a single `main()` function and no global side effects:
+
+```python
+def main() -> None:
+    print("Hello from my-project!")
+
+if __name__ == "__main__":
+    main()
+```
+
+`__main__.py` imports and calls `main()` so the package is runnable as:
+
+```bash
+python -m my_project
+# or via justfile:
+just run
+```
+
+---
+
+## Injection points
+
+The `blank` template exposes two injection points that addons can target:
+
+| Point | File | Locator | What goes here |
+|---|---|---|---|
+| `main_startup` | `src/{{pkg_name}}/main.py` | `before_return_in_function` (`main`) | Startup logic that runs before `main()` returns, e.g. `init_sentry()` |
+| `env_vars` | `.env` | `at_file_end` | Key=value pairs appended to the env file |
+
+The `sentry` addon is the only built-in addon that currently uses `main_startup`. All other addons that declare injections require the `fastapi` template.
+
+---
+
+## Dependencies
+
+The `blank` template adds one runtime dependency:
+
+| Package | Purpose |
+|---|---|
+| `python-dotenv` | Loads `.env` at startup |
+
+Dev tooling (`pytest`, `mypy`, `ruff`, `pytest-cov`) is added under `[dependency-groups] dev` and is the same across all templates.
+
+---
+
+## Justfile recipes
+
+| Recipe | Command |
+|---|---|
+| `just run` | `uv run python -m <pkg_name>` |
+| `just test` | `uv run pytest -v` |
+| `just cov` | `uv run pytest --cov=src --cov-report=term-missing` |
+| `just lint` | `uv run ruff check .` |
+| `just fmt` | `uv run ruff format .` |
+| `just fix` | `ruff check --fix` + `ruff format` |
+| `just check` | `uv run mypy src/` |
+
+The base recipes (`test`, `lint`, `fmt`, `fix`, `check`) are generated for all templates. `run` is template-specific and calls `python -m <pkg_name>` for `blank`.
+
+---
+
+## Compatible addons
+
+| Addon | Compatible | Notes |
+|---|---|---|
+| `docker` | Yes | Generates a `Dockerfile` and `compose.yml` for the package |
+| `sentry` | Yes | Injects `init_sentry()` into `main()` |
+| `github-actions` | Yes | CI workflow: lint, type-check, test |
+| `redis` | Yes | Adds connection helper and compose service |
+| `celery` | Yes | Requires `redis` |
+| `auth-manual` | No | Requires the `fastapi` template |
+
+---
+
+## Compatibility and constraints
+
+**`requires_addons`** is empty — no addon is mandatory for `blank`. The `docker` addon is optional and not auto-selected.
+
+**NixOS:** `shell.nix` is written alongside `.envrc` to provide `libstdc++.so.6`. The `.envrc` is prefixed with `use nix shell.nix`. On non-NixOS systems `shell.nix` is not written.
+
+**Windows:** `.envrc` and `shell.nix` are not written. The environment is managed entirely by `uv` and every recipe runs through `uv run`.
+
+---
+
+## Removing Zenit from a blank project
+
+Delete `.zenit.toml`. The project continues to work. `main.py`, `pyproject.toml`, and the justfile have no dependency on Zenit at runtime.
