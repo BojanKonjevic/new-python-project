@@ -10,12 +10,9 @@ export default defineConfig({
     logo: { text: 'zenit' },
 
     nav: [
-      { text: 'Docs', link: '/getting-started' },
+      { text: 'Home', link: 'https://bojankonjevic.github.io/zenit/' },
       { text: 'GitHub', link: 'https://github.com/BojanKonjevic/zenit' },
-    ],
-
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/BojanKonjevic/zenit' },
+      { text: 'Docs', link: '/getting-started' },
     ],
 
     sidebar: [
