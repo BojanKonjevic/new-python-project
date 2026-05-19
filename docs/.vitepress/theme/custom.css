@@ -1,73 +1,91 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap');
 
-/* ─── Tokens ──────────────────────────────────────────────────────────────── */
+/* ─── Design System ──────────────────────────────────────────────────────────
+  DARK  — warm charcoal-brown. Not true black, not green-tinted.
+          Like a well-worn desk in a dark room.
+          Accent: warm golden amber — matches the landing page exactly.
+
+  LIGHT — warm parchment. Proper ink-on-paper. Not blinding white, not cream.
+          The page bg is warm stone, content sits on slightly lighter paper.
+          Accent: deep inky amber — deep enough to read on warm backgrounds.
+
+  Code blocks: always use a surface distinct from the page —
+    dark mode: very dark warm near-black
+    light mode: rich warm stone (NOT white, NOT navy)
+
+  Syntax: a palette that feels at home in both themes.
+    One warm, one cool, never jarring, always readable.
+──────────────────────────────────────────────────────────────────────────── */
 
 :root {
   --vp-font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --vp-font-family-mono: 'Geist Mono', 'JetBrains Mono', monospace;
 
-  /* Light palette */
-  --vp-c-brand-1: #8a5c2e;
-  --vp-c-brand-2: #7a4e22;
-  --vp-c-brand-3: #a06830;
-  --vp-c-brand-soft: rgba(138, 92, 46, 0.10);
+  /* ── Light: warm parchment ── */
+  --vp-c-brand-1: #7a5020;
+  --vp-c-brand-2: #5c3c16;
+  --vp-c-brand-3: #9a6828;
+  --vp-c-brand-soft: rgba(122, 80, 32, 0.10);
 
-  --vp-c-bg: #f5f2ec;
-  --vp-c-bg-soft: #ede6dc;
-  --vp-c-bg-elv: #faf8f4;
-  --vp-c-bg-alt: #ede6dc;
+  --vp-c-bg:      #f2ede6;   /* warm stone — the reading surface */
+  --vp-c-bg-soft: #ebe5dc;
+  --vp-c-bg-elv:  #f8f4ef;   /* slightly lighter for cards/content */
+  --vp-c-bg-alt:  #ede7de;
 
-  --vp-c-text-1: #1a1714;
-  --vp-c-text-2: #2d2820;
-  --vp-c-text-3: #5a5248;
+  --vp-c-text-1: #1e1c18;
+  --vp-c-text-2: #33302a;
+  --vp-c-text-3: #6b6560;
 
-  --vp-c-divider: #d5cdc0;
-  --vp-c-border: #d5cdc0;
-  --vp-c-gutter: #f5f2ec;
+  --vp-c-divider: #d6cfc5;
+  --vp-c-border:  #d6cfc5;
+  --vp-c-gutter:  #f2ede6;
 
-  --vp-nav-height: 52px;
-  --vp-nav-bg-color: rgba(245, 242, 236, 0.94);
-  --vp-sidebar-bg-color: #f5f2ec;
+  --vp-nav-height:       52px;
+  --vp-nav-bg-color:     rgba(242, 237, 230, 0.93);
+  --vp-sidebar-bg-color: #f2ede6;
 
-  --vp-c-code-inline: #8a5c2e;
-  --vp-c-code-inline-bg: rgba(138, 92, 46, 0.10);
+  --vp-c-code-inline:    #7a5020;
+  --vp-c-code-inline-bg: rgba(122, 80, 32, 0.10);
 
-  --vp-code-block-bg: #eae3d8;
-  --vp-code-block-border: #d5cdc0;
+  /* Light code blocks: warm stone, slightly darker than page */
+  --vp-code-block-bg:     #e8e1d8;
+  --vp-code-block-border: #d0c8be;
 }
 
-/* ─── Dark theme overrides ───────────────────────────────────────────────── */
+/* ─── Dark theme ─────────────────────────────────────────────────────────── */
 
 html.dark {
-  --vp-c-brand-1: #d4a264;
-  --vp-c-brand-2: #c49050;
-  --vp-c-brand-3: #e8bc84;
-  --vp-c-brand-soft: rgba(212, 162, 100, 0.14);
+  /* ── Dark: warm charcoal — mirrors landing page exactly ── */
+  --vp-c-brand-1: #c8922e;
+  --vp-c-brand-2: #b07828;
+  --vp-c-brand-3: #d8a848;
+  --vp-c-brand-soft: rgba(200, 146, 46, 0.12);
 
-  --vp-c-bg: #18160f;
-  --vp-c-bg-soft: #201e16;
-  --vp-c-bg-elv: #252218;
-  --vp-c-bg-alt: #201e16;
+  --vp-c-bg:      #141210;   /* warm near-black */
+  --vp-c-bg-soft: #1c1a15;
+  --vp-c-bg-elv:  #201e18;
+  --vp-c-bg-alt:  #1c1a15;
 
-  --vp-c-text-1: #e8e3da;
-  --vp-c-text-2: #d0c8b8;
-  --vp-c-text-3: #a09888;
+  --vp-c-text-1: #e6e0d5;   /* cream-white, warm */
+  --vp-c-text-2: #c8c0b0;
+  --vp-c-text-3: #9c9080;
 
-  --vp-c-divider: #302c22;
-  --vp-c-border: #302c22;
-  --vp-c-gutter: #18160f;
+  --vp-c-divider: #2c2820;
+  --vp-c-border:  #2c2820;
+  --vp-c-gutter:  #141210;
 
-  --vp-nav-bg-color: rgba(24, 22, 15, 0.92);
-  --vp-sidebar-bg-color: #18160f;
+  --vp-nav-bg-color:     rgba(20, 18, 16, 0.92);
+  --vp-sidebar-bg-color: #141210;
 
-  --vp-c-code-inline: #d4a264;
-  --vp-c-code-inline-bg: rgba(212, 162, 100, 0.12);
+  --vp-c-code-inline:    #c8922e;
+  --vp-c-code-inline-bg: rgba(200, 146, 46, 0.12);
 
-  --vp-code-block-bg: #1e1b13;
-  --vp-code-block-border: #312d22;
+  /* Dark code blocks: near-black warm */
+  --vp-code-block-bg:     #0e0d0b;
+  --vp-code-block-border: #252018;
 }
 
-/* ─── Typography ──────────────────────────────────────────────────────────── */
+/* ─── Typography ─────────────────────────────────────────────────────────── */
 
 body {
   font-weight: 500;
@@ -108,13 +126,13 @@ body {
   font-weight: 500;
 }
 
-/* ─── Nav ─────────────────────────────────────────────────────────────────── */
+/* ─── Nav ────────────────────────────────────────────────────────────────── */
 
 .VPNav {
   border-bottom: 1px solid var(--vp-c-divider) !important;
   background-color: var(--vp-nav-bg-color) !important;
-  backdrop-filter: blur(16px) saturate(1.3) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(1.3) !important;
+  backdrop-filter: blur(18px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.2) !important;
 }
 
 .VPNavBarTitle .title {
@@ -125,7 +143,7 @@ body {
   color: var(--vp-c-text-1) !important;
 }
 
-/* ─── Sidebar ─────────────────────────────────────────────────────────────── */
+/* ─── Sidebar ────────────────────────────────────────────────────────────── */
 
 .VPSidebar {
   background-color: var(--vp-sidebar-bg-color) !important;
@@ -139,14 +157,14 @@ body {
 }
 
 .VPSidebarItem.level-0 > .item > .text {
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 600 !important;
-  letter-spacing: 0.06em !important;
+  letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   color: var(--vp-c-text-3) !important;
 }
 
-/* ─── Links ───────────────────────────────────────────────────────────────── */
+/* ─── Links ──────────────────────────────────────────────────────────────── */
 
 .vp-doc a {
   color: var(--vp-c-brand-1);
@@ -159,55 +177,51 @@ body {
   text-underline-offset: 3px;
 }
 
-/* ─── Inline code ─────────────────────────────────────────────────────────── */
+/* ─── Inline code ────────────────────────────────────────────────────────── */
 
 .vp-doc :not(pre) > code {
   font-family: 'Geist Mono', monospace !important;
-  font-size: 0.9em !important;
+  font-size: 0.88em !important;
   color: var(--vp-c-code-inline) !important;
   background-color: var(--vp-c-code-inline-bg) !important;
   border: none !important;
-  padding: 0.12em 0.4em !important;
+  padding: 0.12em 0.42em !important;
   border-radius: 4px !important;
   font-variant-ligatures: none !important;
   font-feature-settings: 'liga' 0, 'calt' 0 !important;
   vertical-align: baseline !important;
 }
 
-/* ─── Code blocks ─────────────────────────────────────────────────────────── */
+/* ─── Code blocks ────────────────────────────────────────────────────────── */
 
 .vp-doc div[class*='language-'] {
   background-color: var(--vp-code-block-bg) !important;
   border: 1px solid var(--vp-code-block-border) !important;
-  border-radius: 9px !important;
+  border-radius: 10px !important;
 }
 
 html:not(.dark) .vp-doc div[class*='language-'] {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05) !important;
 }
 
 html.dark .vp-doc div[class*='language-'] {
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.12) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2) !important;
 }
 
-.vp-doc div[class*='language-'] pre {
-  background-color: transparent !important;
-}
-
-/* Shiki bakes bg into the pre style attr — neutralise it */
+.vp-doc div[class*='language-'] pre,
 .vp-doc div[class*='language-'] pre.shiki {
   background-color: transparent !important;
 }
 
 .vp-doc div[class*='language-'] > span.lang {
   font-family: 'Geist Mono', monospace !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 500 !important;
-  letter-spacing: 0.04em !important;
+  letter-spacing: 0.05em !important;
 }
 
-html:not(.dark) .vp-doc div[class*='language-'] > span.lang { color: #8a8278 !important; }
-html.dark       .vp-doc div[class*='language-'] > span.lang { color: #6a6050 !important; }
+html:not(.dark) .vp-doc div[class*='language-'] > span.lang { color: #a09888 !important; }
+html.dark       .vp-doc div[class*='language-'] > span.lang { color: #3a3228 !important; }
 
 .vp-doc div[class*='language-'] > button.copy {
   border-color: var(--vp-code-block-border) !important;
@@ -218,110 +232,96 @@ html.dark       .vp-doc div[class*='language-'] > span.lang { color: #6a6050 !im
 
 .vp-doc div[class*='language-'] code {
   font-family: 'Geist Mono', monospace !important;
-  font-size: 0.85rem !important;
-  line-height: 1.7 !important;
+  font-size: 0.84rem !important;
+  line-height: 1.75 !important;
   font-variant-ligatures: none !important;
   font-feature-settings: 'liga' 0, 'calt' 0 !important;
 }
 
 /* ─── Syntax token overrides ─────────────────────────────────────────────── */
 /*
-  VitePress calls Shiki with `defaultColor: false`, which means spans have
-  NO `color:` property at all. Instead every span gets two CSS custom
-  properties:
+  Light code blocks: warm stone background → need dark, readable ink tones.
+  Dark code blocks:  near-black warm → need luminous, low-contrast highlights.
 
-    <span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">uv</span>
+  Token map (github-light / github-dark Shiki):
+    #6F42C1 / #B392F0 — functions, bash executables  (uv, uvx, zenit)
+    #D73A49 / #F97583 — keywords, operators
+    #032F62 / #9ECBFF — strings; bash args/subcommands
+    #005CC5 / #79B8FF — numbers, types, built-ins
+    #E36209 / #FFAB70 — attributes, flags, object keys
+    #6A737D / #6A737D — comments
+    #24292E / #E1E4E8 — base text
 
-  VitePress then applies color via its own stylesheet:
-    html:not(.dark) .vp-code span { color: var(--shiki-light, inherit); }
-    .dark           .vp-code span { color: var(--shiki-dark,  inherit); }
+  LIGHT (warm stone bg):
+    executables → deep inky amber    — matches brand, strong and clear
+    keywords    → muted terracotta   — reserved, warm, not alarming
+    strings     → deep teal          — data feels cool
+    numbers     → deep amber         — numbers in amber feels right on warm bg
+    flags       → sienna             — actionable
+    comments    → italic warm gray
+    base text   → near-black
 
-  So we must:
-    1. Match on `--shiki-light` (NOT `color:`)
-    2. Override BOTH --shiki-light and --shiki-dark on the same rule
-
-  Verified token map (from actual Shiki dual-theme output):
-  ┌──────────────────────┬──────────────────────┬──────────────────────┐
-  │ Role                 │ --shiki-light        │ --shiki-dark         │
-  ├──────────────────────┼──────────────────────┼──────────────────────┤
-  │ Keywords / operators │ #6F42C1  ← NOTE:     │ #B392F0              │
-  │                      │ bash cmds get this   │                      │
-  │ Keywords (python)    │ #D73A49              │ #F97583              │
-  │ Strings              │ #032F62              │ #9ECBFF              │
-  │ Numbers / types      │ #005CC5              │ #79B8FF              │
-  │ Attrs / props        │ #E36209              │ #FFAB70              │
-  │ Comments             │ #6A737D              │ #6A737D (same)       │
-  │ Base text            │ #24292E              │ #E1E4E8              │
-  └──────────────────────┴──────────────────────┴──────────────────────┘
-
-  Zenit warm palette:
-  #6F42C1 → terracotta   #7a4520  /  #c8915a
-  #D73A49 → amber-brown  #8a5c2e  /  #d4a264
-  #032F62 → sage green   #4a6e3c  /  #8faa8b
-  #005CC5 → deep amber   #7a5820  /  #c4a060
-  #E36209 → warm sienna  #8a4820  /  #c87840
-  #6A737D → warm muted italic
-  #24292E → warm ink / cream
+  DARK (near-black warm bg):
+    executables → warm golden amber  — matches brand exactly
+    keywords    → soft coral         — reserved words, clear but not harsh
+    strings     → sky blue           — data/values, classic
+    numbers     → warm gold lighter  — numbers pop against near-black
+    flags       → warm peach         — distinct from gold, actionable
+    comments    → dim warm gray      — barely there, italic
+    base text   → cream-white
 */
 
-/* ── Functions / bash command names  (--shiki-light:#6F42C1) ─────────────── */
-
+/* Executables / functions — #6F42C1 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6F42C1'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6f42c1'] {
-  --shiki-light: #7a4520 !important;
-  --shiki-dark:  #c8915a !important;
+  --shiki-light: #7a5020 !important;
+  --shiki-dark:  #c8922e !important;
 }
 
-/* ── Keywords / operators  (--shiki-light:#D73A49) ───────────────────────── */
-
+/* Keywords / operators — #D73A49 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#D73A49'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#d73a49'] {
-  --shiki-light: #8a5c2e !important;
-  --shiki-dark:  #d4a264 !important;
+  --shiki-light: #8a3a28 !important;
+  --shiki-dark:  #d47870 !important;
 }
 
-/* ── Strings  (--shiki-light:#032F62) ────────────────────────────────────── */
-
+/* Strings / bash args — #032F62 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#032F62'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#032f62'] {
-  --shiki-light: #4a6e3c !important;
-  --shiki-dark:  #8faa8b !important;
+  --shiki-light: #285870 !important;
+  --shiki-dark:  #72aac8 !important;
 }
 
-/* ── Numbers / flags / types  (--shiki-light:#005CC5) ───────────────────── */
-
+/* Numbers / types / built-ins — #005CC5 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#005CC5'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#005cc5'] {
-  --shiki-light: #7a5820 !important;
-  --shiki-dark:  #c4a060 !important;
+  --shiki-light: #7a5018 !important;
+  --shiki-dark:  #d4a84c !important;
 }
 
-/* ── Attributes / properties  (--shiki-light:#E36209) ───────────────────── */
-
+/* Flags / attributes / object keys — #E36209 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#E36209'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#e36209'] {
-  --shiki-light: #8a4820 !important;
-  --shiki-dark:  #c87840 !important;
+  --shiki-light: #7a4018 !important;
+  --shiki-dark:  #c8885a !important;
 }
 
-/* ── Comments  (--shiki-light:#6A737D — same in both themes) ────────────── */
-
+/* Comments — #6A737D */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6A737D'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6a737d'] {
-  --shiki-light: #8a8278 !important;
-  --shiki-dark:  #5c5448 !important;
+  --shiki-light: #9a9088 !important;
+  --shiki-dark:  #5e5448 !important;
   font-style: italic !important;
 }
 
-/* ── Base text / plain identifiers  (--shiki-light:#24292E) ─────────────── */
-
+/* Base text — #24292E */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#24292E'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#24292e'] {
-  --shiki-light: #1a1714 !important;
-  --shiki-dark:  #d8d4cc !important;
+  --shiki-light: #2a2620 !important;
+  --shiki-dark:  #d8d0c0 !important;
 }
 
-/* ─── Callouts ────────────────────────────────────────────────────────────── */
+/* ─── Callouts ───────────────────────────────────────────────────────────── */
 
 .vp-doc .custom-block {
   border-radius: 8px !important;
@@ -332,26 +332,30 @@ html.dark       .vp-doc div[class*='language-'] > span.lang { color: #6a6050 !im
   border-color: var(--vp-c-brand-1) !important;
 }
 .vp-doc .custom-block.warning {
-  background-color: rgba(160, 100, 48, 0.08) !important;
+  background-color: rgba(160, 110, 30, 0.08) !important;
 }
 .vp-doc .custom-block.info {
   background-color: var(--vp-c-bg-soft) !important;
 }
 
-/* ─── Tables ──────────────────────────────────────────────────────────────── */
+/* ─── Tables ─────────────────────────────────────────────────────────────── */
 
 .vp-doc table { font-size: 0.9rem !important; }
 
+/* Flags and argument names must never break mid-token */
+.vp-doc td code,
+.vp-doc th code { white-space: nowrap !important; }
+
 .vp-doc thead th {
   font-family: 'Instrument Sans', sans-serif !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 600 !important;
-  letter-spacing: 0.06em !important;
+  letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   color: var(--vp-c-text-3) !important;
 }
 
-/* ─── Color scheme ─────────────────────────────────────────────────────────── */
+/* ─── Color scheme ───────────────────────────────────────────────────────── */
 
 html      { color-scheme: light; }
 html.dark { color-scheme: dark; }
