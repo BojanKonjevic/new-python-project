@@ -76,7 +76,7 @@ All handlers share the same contract: they are idempotent (safe to call twice), 
 
 ## What Zenit injects
 
-Zenit injects only infrastructure wiring. It never injects business logic, data models, or test code.
+Zenit injects only infrastructure wiring. It never injects into existing business logic, data models, or test files. Some addons do create new test files — that is a file write, not an injection.
 
 Concretely, injections are limited to:
 
