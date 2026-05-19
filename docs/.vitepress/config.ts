@@ -89,9 +89,15 @@ export default defineConfig({
     },
   },
 
-  markdown: {
-    // Validate all internal links at build time
-  },
+    markdown: {
+      // Force dark Shiki theme in both light & dark site modes so
+      // inline syntax colors are always light-on-dark, matching the
+      // CSS code-block surface that stays near-black in both themes.
+      theme: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
+    },
 
   vite: {
     build: {

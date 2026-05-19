@@ -2,57 +2,11 @@
 
 /* ─── Tokens ──────────────────────────────────────────────────────────────── */
 
-/*
-  Default (dark) — rich warm dark, amber accents.
-  Light is an opt-in via .light class / prefers-color-scheme override.
-  Matches the zenit landing page design system.
-*/
-
 :root {
   --vp-font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --vp-font-family-mono: 'Geist Mono', 'JetBrains Mono', monospace;
 
-  /* Dark palette — default */
-  --vp-c-brand-1: #d4a264;
-  --vp-c-brand-2: #c49050;
-  --vp-c-brand-3: #e8bc84;
-  --vp-c-brand-soft: rgba(212, 162, 100, 0.14);
-
-  --vp-c-bg: #0f0e0c;
-  --vp-c-bg-soft: #181612;
-  --vp-c-bg-elv: #1c1a16;
-  --vp-c-bg-alt: #181612;
-
-  --vp-c-text-1: #e8e3da;
-  --vp-c-text-2: #d0c8b8;
-  --vp-c-text-3: #a09888;
-
-  --vp-c-divider: #2a2620;
-  --vp-c-border: #2a2620;
-  --vp-c-gutter: #0f0e0c;
-
-  --vp-nav-height: 52px;
-  --vp-nav-bg-color: rgba(15, 14, 12, 0.92);
-  --vp-sidebar-bg-color: #0f0e0c;
-
-  /* Inline code */
-  --vp-c-code-inline: #d4a264;
-  --vp-c-code-inline-bg: rgba(212, 162, 100, 0.12);
-
-  /* Code block surface */
-  --vp-code-block-bg: #141210;
-  --vp-code-block-border: #2e2a24;
-}
-
-/* ─── Light theme overrides ───────────────────────────────────────────────── */
-
-/*
-  Light palette — warm editorial: cream background, dark ink, high-contrast
-  amber accent. Matches the landing page light theme.
-*/
-
-.light,
-html.light {
+  /* Light palette — default (no .dark class) */
   --vp-c-brand-1: #8a5c2e;
   --vp-c-brand-2: #7a4e22;
   --vp-c-brand-3: #a06830;
@@ -71,14 +25,50 @@ html.light {
   --vp-c-border: #d5cdc0;
   --vp-c-gutter: #f5f2ec;
 
+  --vp-nav-height: 52px;
   --vp-nav-bg-color: rgba(245, 242, 236, 0.94);
   --vp-sidebar-bg-color: #f5f2ec;
 
+  /* Inline code */
   --vp-c-code-inline: #8a5c2e;
   --vp-c-code-inline-bg: rgba(138, 92, 46, 0.10);
 
-  --vp-code-block-bg: #1a1714;
-  --vp-code-block-border: #2a2620;
+  /* Code block surface */
+  --vp-code-block-bg: #ede6dc;
+  --vp-code-block-border: #d5cdc0;
+}
+
+/* ─── Dark theme overrides ───────────────────────────────────────────────── */
+
+html.dark {
+  --vp-c-brand-1: #d4a264;
+  --vp-c-brand-2: #c49050;
+  --vp-c-brand-3: #e8bc84;
+  --vp-c-brand-soft: rgba(212, 162, 100, 0.14);
+
+  --vp-c-bg: #0f0e0c;
+  --vp-c-bg-soft: #181612;
+  --vp-c-bg-elv: #1c1a16;
+  --vp-c-bg-alt: #181612;
+
+  --vp-c-text-1: #e8e3da;
+  --vp-c-text-2: #d0c8b8;
+  --vp-c-text-3: #a09888;
+
+  --vp-c-divider: #2a2620;
+  --vp-c-border: #2a2620;
+  --vp-c-gutter: #0f0e0c;
+
+  --vp-nav-bg-color: rgba(15, 14, 12, 0.92);
+  --vp-sidebar-bg-color: #0f0e0c;
+
+  /* Inline code */
+  --vp-c-code-inline: #d4a264;
+  --vp-c-code-inline-bg: rgba(212, 162, 100, 0.12);
+
+  /* Code block surface */
+  --vp-code-block-bg: #141210;
+  --vp-code-block-border: #2e2a24;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
@@ -190,16 +180,19 @@ body {
 
 /* ─── Code blocks ─────────────────────────────────────────────────────────── */
 
-/*
-  Both themes use a near-black code surface so syntax colors are consistent
-  regardless of which theme is active. Light theme page is cream; code blocks
-  are dark — this is intentional and matches the editorial aesthetic.
-*/
-
 .vp-doc div[class*='language-'] {
   background-color: var(--vp-code-block-bg) !important;
   border: 1px solid var(--vp-code-block-border) !important;
   border-radius: 9px !important;
+}
+
+/* Light: subtle shadow */
+html:not(.dark) .vp-doc div[class*='language-'] {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+
+/* Dark: deep theatrical shadow */
+html.dark .vp-doc div[class*='language-'] {
   box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.15) !important;
 }
 
@@ -215,6 +208,10 @@ body {
   letter-spacing: 0.04em !important;
 }
 
+html:not(.dark) .vp-doc div[class*='language-'] > span.lang {
+  color: #8a8278 !important;
+}
+
 .vp-doc div[class*='language-'] > button.copy {
   border-color: var(--vp-code-block-border) !important;
 }
@@ -223,39 +220,190 @@ body {
   border-color: #d4a264 !important;
 }
 
+html:not(.dark) .vp-doc div[class*='language-'] > button.copy:hover {
+  border-color: #8a5c2e !important;
+}
+
 .vp-doc div[class*='language-'] code {
   font-family: 'Geist Mono', monospace !important;
   font-size: 0.85rem !important;
   line-height: 1.7 !important;
-  color: #d8d4cc !important;
   font-variant-ligatures: none !important;
   font-feature-settings: 'liga' 0, 'calt' 0 !important;
 }
 
-/* Syntax token overrides — warm amber keywords, sage strings, dim comments */
+/* ─── Syntax token overrides ─────────────────────────────────────────────── */
+/* Remap Shiki's github-light / github-dark to the zenit warm palette.        */
 
-.vp-doc div[class*='language-'] .token.keyword,
-.vp-doc div[class*='language-'] span[style*='color:#569CD6'],
-.vp-doc div[class*='language-'] span[style*='color:#C586C0'],
-.vp-doc div[class*='language-'] span[style*='color:#4EC9B0'] {
-  color: #d4a264 !important;
+/* Base text color for all code */
+html:not(.dark) .vp-doc div[class*='language-'] code {
+  color: #1a1714 !important;
 }
 
-.vp-doc div[class*='language-'] .token.string,
-.vp-doc div[class*='language-'] span[style*='color:#CE9178'] {
+html.dark .vp-doc div[class*='language-'] code {
+  color: #d8d4cc !important;
+}
+
+/* ─── Light mode specific remaps ────────────────────────────────────────── */
+
+/* Strings → sage green */
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#032f62'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #032f62'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#032F62'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #032F62'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0a3069'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0a3069'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0A3069'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0A3069'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0969da'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0969da'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0969DA'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0969DA'] {
+  color: #4a6e3c !important;
+}
+
+/* Keywords, types, builtins, functions, numbers, constants, tags, attrs → amber-brown */
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#cf222e'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #cf222e'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#CF222E'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #CF222E'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#d73a49'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #d73a49'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#D73A49'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #D73A49'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#953800'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #953800'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#B35900'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #B35900'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#e36209'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #e36209'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#E36209'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #E36209'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6f42c1'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6f42c1'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6F42C1'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6F42C1'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8250df'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8250df'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8250DF'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8250DF'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8a63d2'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8a63d2'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8A63D2'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8A63D2'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#005cc5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #005cc5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#005CC5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #005CC5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0366d6'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0366d6'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0366D6'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0366D6'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0550ae'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0550ae'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#0550AE'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #0550AE'] {
+  color: #8a5c2e !important;
+}
+
+/* Comments → warm gray italic */
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6e7781'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6e7781'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#6E7781'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #6E7781'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#959da5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #959da5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#959DA5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #959DA5'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8c959f'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8c959f'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#8C959F'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #8C959F'] {
+  color: #8a8278 !important;
+  font-style: italic !important;
+}
+
+/* Default text / variables → dark ink */
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#24292f'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #24292f'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color:#24292F'],
+html:not(.dark) .vp-doc div[class*='language-'] span[style*='color: #24292F'] {
+  color: #1a1714 !important;
+}
+
+/* ─── Dark mode specific remaps ─────────────────────────────────────────── */
+
+/* Strings → sage */
+html.dark .vp-doc div[class*='language-'] span[style*='color:#a5d6ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #a5d6ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#A5D6FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #A5D6FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#79c0ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #79c0ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#79C0FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #79C0FF'] {
   color: #8faa8b !important;
 }
 
-.vp-doc div[class*='language-'] .token.comment,
-.vp-doc div[class*='language-'] span[style*='color:#6A9955'] {
+/* Keywords, types, builtins, functions, numbers, constants, tags, attrs → amber */
+html.dark .vp-doc div[class*='language-'] span[style*='color:#ff7b72'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #ff7b72'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#FF7B72'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #FF7B72'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#f85149'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #f85149'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#F85149'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #F85149'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#ffa657'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #ffa657'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#FFA657'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #FFA657'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#f0883e'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #f0883e'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#F0883E'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #F0883E'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#e3b341'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #e3b341'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#E3B341'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #E3B341'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#d2a8ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #d2a8ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#D2A8FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #D2A8FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#bc8cff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #bc8cff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#BC8CFF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #BC8CFF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#58a6ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #58a6ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#58A6FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #58A6FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#96d0ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #96d0ff'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#96D0FF'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #96D0FF'] {
+  color: #d4a264 !important;
+}
+
+/* Comments → warm gray italic */
+html.dark .vp-doc div[class*='language-'] span[style*='color:#8b949e'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #8b949e'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#8B949E'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #8B949E'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#6e7681'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #6e7681'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#6E7681'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #6E7681'] {
   color: #5a5450 !important;
   font-style: italic !important;
 }
 
-.vp-doc div[class*='language-'] .token.number,
-.vp-doc div[class*='language-'] .token.boolean,
-.vp-doc div[class*='language-'] span[style*='color:#B5CEA8'] {
-  color: #9fb3c8 !important;
+/* Default text / variables → warm light */
+html.dark .vp-doc div[class*='language-'] span[style*='color:#c9d1d9'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #c9d1d9'],
+html.dark .vp-doc div[class*='language-'] span[style*='color:#C9D1D9'],
+html.dark .vp-doc div[class*='language-'] span[style*='color: #C9D1D9'] {
+  color: #d8d4cc !important;
 }
 
 /* ─── Callouts ────────────────────────────────────────────────────────────── */
@@ -293,12 +441,12 @@ body {
   color: var(--vp-c-text-3) !important;
 }
 
-/* ─── Default to dark ─────────────────────────────────────────────────────── */
+/* ─── Default to light ─────────────────────────────────────────────────────── */
 
-html:not(.light) {
-  color-scheme: dark;
+html {
+  color-scheme: light;
 }
 
-html.light {
-  color-scheme: light;
+html.dark {
+  color-scheme: dark;
 }
