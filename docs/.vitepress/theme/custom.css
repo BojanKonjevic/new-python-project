@@ -1,42 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap');
 
-/* ─── Base tokens — light mode ─────────────────────────────────────────────── */
+/* ─── Tokens ──────────────────────────────────────────────────────────────── */
+
 :root {
   --vp-font-family-base: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --vp-font-family-mono: 'Geist Mono', 'Menlo', 'Consolas', monospace;
+  --vp-font-family-mono: 'Geist Mono', 'JetBrains Mono', monospace;
 
-  /* Brand */
   --vp-c-brand-1: #7a6248;
   --vp-c-brand-2: #7a6248;
   --vp-c-brand-3: #a08060;
-  --vp-c-brand-soft: rgba(122, 98, 72, 0.09);
+  --vp-c-brand-soft: rgba(122, 98, 72, 0.12);
 
-  /* Backgrounds */
   --vp-c-bg: #f7f6f2;
   --vp-c-bg-soft: #efede8;
   --vp-c-bg-elv: #ffffff;
   --vp-c-bg-alt: #efede8;
 
-  /* Text */
   --vp-c-text-1: #18181a;
   --vp-c-text-2: #42414a;
   --vp-c-text-3: #65636e;
 
-  /* Borders */
   --vp-c-divider: #dddad3;
   --vp-c-border: #dddad3;
   --vp-c-gutter: #f7f6f2;
 
   /* Nav */
   --vp-nav-height: 52px;
-  --vp-nav-bg-color: rgba(247, 246, 242, 0.94);
+  --vp-nav-bg-color: #f7f6f2;
 
   /* Sidebar */
   --vp-sidebar-bg-color: #f7f6f2;
 }
 
-/* ─── Dark mode ─────────────────────────────────────────────────────────────── */
 .dark {
+  --vp-c-brand-1: #c09a70;
+  --vp-c-brand-2: #c09a70;
+  --vp-c-brand-3: #a07850;
+  --vp-c-brand-soft: rgba(192, 154, 112, 0.12);
+
   --vp-c-bg: #111110;
   --vp-c-bg-soft: #1e1c1a;
   --vp-c-bg-elv: #191917;
@@ -50,65 +51,77 @@
   --vp-c-border: #282622;
   --vp-c-gutter: #111110;
 
-  --vp-c-brand-1: #c09a70;
-  --vp-c-brand-2: #c09a70;
-  --vp-c-brand-3: #a08060;
-  --vp-c-brand-soft: rgba(192, 154, 112, 0.10);
-
-  --vp-nav-bg-color: rgba(17, 17, 16, 0.94);
+  --vp-nav-bg-color: #111110;
   --vp-sidebar-bg-color: #111110;
 }
 
-/* ─── Nav ───────────────────────────────────────────────────────────────────── */
-.VPNav {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--vp-c-border);
-}
+/* ─── Typography ──────────────────────────────────────────────────────────── */
 
-.VPNavBarTitle .title {
-  font-family: 'Geist Mono', monospace;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  font-size: 15px;
-  color: var(--vp-c-text-1);
-}
-
-/* ─── Sidebar ───────────────────────────────────────────────────────────────── */
-.VPSidebar {
-  font-size: 13px;
-}
-
-.VPSidebarItem .text {
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-/* ─── Typography ────────────────────────────────────────────────────────────── */
 .vp-doc h1 {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Instrument Serif', Georgia, serif;
   font-weight: 400;
-  font-style: italic;
+  font-size: 2rem;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
 .vp-doc h2 {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Instrument Serif', Georgia, serif;
   font-weight: 400;
+  font-size: 1.35rem;
   letter-spacing: -0.015em;
+  border-top: 1px solid var(--vp-c-divider);
+  padding-top: 1.25rem;
+  margin-top: 2rem;
 }
 
 .vp-doc h3,
 .vp-doc h4,
 .vp-doc h5,
 .vp-doc h6 {
-  font-family: 'Instrument Sans', -apple-system, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-/* ─── Links ─────────────────────────────────────────────────────────────────── */
+/* ─── Nav ─────────────────────────────────────────────────────────────────── */
+
+.VPNav {
+  border-bottom: 1px solid var(--vp-c-divider) !important;
+  background-color: var(--vp-nav-bg-color) !important;
+}
+
+/* Logo text */
+.VPNavBarTitle .title {
+  font-family: 'Geist Mono', monospace !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  letter-spacing: -0.025em !important;
+  color: var(--vp-c-text-1) !important;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────────────────────── */
+
+.VPSidebar {
+  background-color: var(--vp-sidebar-bg-color) !important;
+  border-right: 1px solid var(--vp-c-divider) !important;
+}
+
+.VPSidebarItem .text {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.VPSidebarItem.level-0 > .item > .text {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--vp-c-text-3) !important;
+}
+
+/* ─── Links ───────────────────────────────────────────────────────────────── */
+
 .vp-doc a {
   color: var(--vp-c-brand-1);
   text-decoration: none;
@@ -120,68 +133,153 @@
   text-underline-offset: 3px;
 }
 
-/* ─── Inline code ───────────────────────────────────────────────────────────── */
+/* ─── Inline code ─────────────────────────────────────────────────────────── */
+/*
+  VitePress wraps inline code in <code> inside <p>/<li>/<td>.
+  We target it directly without a background box — color only, matching
+  the front page `code {}` rule. !important is needed to override
+  VitePress's own inline code background/color vars.
+*/
+
+:root {
+  --vp-c-code-inline: #7a6248;
+}
+
+.dark {
+  --vp-c-code-inline: #c09a70;
+}
+
 .vp-doc :not(pre) > code {
-  font-family: 'Geist Mono', monospace;
-  font-size: 0.875em;
-  color: var(--vp-c-brand-1);
-  background: transparent;
-  border: none;
-  padding: 0;
-  font-weight: 500;
+  font-family: 'Geist Mono', monospace !important;
+  font-size: 0.875em !important;
+  color: var(--vp-c-code-inline) !important;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-variant-ligatures: none !important;
+  font-feature-settings: 'liga' 0, 'calt' 0 !important;
 }
 
-/* ─── Code blocks ───────────────────────────────────────────────────────────── */
+/* ─── Code blocks ─────────────────────────────────────────────────────────── */
+/*
+  Dark terminal surface matching the front page hero block.
+  We keep Shiki's token colors but replace the background and chrome.
+
+  Syntax color decisions:
+  - Keywords / language constructs (import, from, def): warm amber, matches brand
+  - Strings: muted sage — enough contrast, not garish
+  - Comments: dim, clearly secondary
+  - Numbers, booleans: cool-neutral — distinct without clashing
+  - Shell flags (e.g. -LsSf): warm amber, same as keywords
+  - Everything else (operators, punctuation): default text, no extra color
+  This avoids the "rainbow terminal" look while keeping tokens legible.
+*/
+
 .vp-doc div[class*='language-'] {
-  background: #171614;
-  border: 1px solid #2a2825;
-  border-radius: 6px;
+  background-color: #171614 !important;
+  border: 1px solid #2a2825 !important;
+  border-radius: 8px !important;
 }
 
-.dark .vp-doc div[class*='language-'] {
-  background: #0c0b0a;
-  border-color: #232120;
-}
-
-.vp-doc div[class*='language-'] code {
-  font-family: 'Geist Mono', monospace;
-  font-size: 0.875em;
-  color: #c8c5be;
+.vp-doc div[class*='language-'] pre {
+  background-color: transparent !important;
 }
 
 /* Language label */
 .vp-doc div[class*='language-'] > span.lang {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  color: #585550;
+  font-family: 'Geist Mono', monospace !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: #7a7872 !important;
+  letter-spacing: 0.04em !important;
 }
 
-/* ─── Custom blocks (callouts) ──────────────────────────────────────────────── */
+/* Copy button */
+.vp-doc div[class*='language-'] > button.copy {
+  border-color: #2a2825 !important;
+}
+
+.vp-doc div[class*='language-'] > button.copy:hover {
+  border-color: #c09a70 !important;
+}
+
+/* Code text baseline */
+.vp-doc div[class*='language-'] code {
+  font-family: 'Geist Mono', monospace !important;
+  font-size: 0.85rem !important;
+  line-height: 1.7 !important;
+  color: #d4cfc8 !important;
+  font-variant-ligatures: none !important;
+  font-feature-settings: 'liga' 0, 'calt' 0 !important;
+}
+
+/*
+  Shiki token overrides.
+  Targets both the default theme class names and the data-* attributes
+  VitePress uses depending on its Shiki version.
+*/
+
+/* Keywords: if/import/from/async/def/class/return — warm amber */
+.vp-doc div[class*='language-'] .token.keyword,
+.vp-doc div[class*='language-'] span[style*='color:#569CD6'],
+.vp-doc div[class*='language-'] span[style*='color:#C586C0'],
+.vp-doc div[class*='language-'] span[style*='color:#4EC9B0'] {
+  color: #c09a70 !important;
+}
+
+/* Strings — muted sage */
+.vp-doc div[class*='language-'] .token.string,
+.vp-doc div[class*='language-'] span[style*='color:#CE9178'],
+.vp-doc div[class*='language-'] span[style*='color:#6A9955'] {
+  color: #8faa8b !important;
+}
+
+/* Comments — dim */
+.vp-doc div[class*='language-'] .token.comment,
+.vp-doc div[class*='language-'] span[style*='color:#6A9955'] {
+  color: #5a5854 !important;
+  font-style: italic !important;
+}
+
+/* Numbers, booleans — cool neutral */
+.vp-doc div[class*='language-'] .token.number,
+.vp-doc div[class*='language-'] .token.boolean,
+.vp-doc div[class*='language-'] span[style*='color:#B5CEA8'] {
+  color: #9fb3c8 !important;
+}
+
+/* ─── Callouts ────────────────────────────────────────────────────────────── */
+
+.vp-doc .custom-block {
+  border-radius: 6px !important;
+  border-left-width: 3px !important;
+}
+
 .vp-doc .custom-block.tip {
-  border-color: var(--vp-c-brand-1);
-  background: var(--vp-c-brand-soft);
+  background-color: rgba(122, 98, 72, 0.07) !important;
+  border-color: var(--vp-c-brand-1) !important;
 }
 
 .vp-doc .custom-block.warning {
-  border-color: #a07840;
-  background: rgba(160, 120, 64, 0.08);
+  background-color: rgba(160, 100, 48, 0.07) !important;
 }
 
-/* ─── Tables ────────────────────────────────────────────────────────────────── */
+.vp-doc .custom-block.info {
+  background-color: var(--vp-c-bg-soft) !important;
+}
+
+/* ─── Tables ──────────────────────────────────────────────────────────────── */
+
 .vp-doc table {
-  font-size: 14px;
+  font-size: 0.9rem !important;
 }
 
-.vp-doc th {
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--vp-c-text-3);
-}
-
-/* ─── Home page (minimal — real landing page is standalone index.html) ──────── */
-.VPHome {
-  padding-top: 80px;
+.vp-doc thead th {
+  font-family: 'Instrument Sans', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--vp-c-text-3) !important;
 }
