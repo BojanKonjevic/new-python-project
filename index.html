@@ -18,9 +18,9 @@
             --bg-elevated:      #1c1a16;
             --bg-code:          #181612;
             --text-primary:     #e8e3da;
-            --text-secondary:   #b8b0a0;
-            --text-tertiary:    #7a7268;
-            --text-muted:       #4e4840;
+            --text-secondary:   #d0c8b8;
+            --text-tertiary:    #a09888;
+            --text-muted:       #7a7268;
             --border:           #2a2620;
             --border-light:     #221f1a;
             --accent:           #e8e3da;
@@ -28,13 +28,13 @@
             --accent-muted:     rgba(232,227,218,0.06);
             --accent-warm:      #d4a264;
             --accent-warm-muted:rgba(212,162,100,0.12);
-            --terminal-bg:      #0a0908;
-            --terminal-border:  #1e1c18;
-            --terminal-text:    #c4c0b8;
+            --terminal-bg:      #141210;
+            --terminal-border:  #2e2a24;
+            --terminal-text:    #d8d4cc;
             --terminal-prompt:  #d4a264;
             --terminal-ok:      #82b07a;
             --terminal-info:    #7aafc6;
-            --terminal-dim:     #4a4640;
+            --terminal-dim:     #6a6458;
             --nav-bg:           rgba(15,14,12,0.92);
             --check:            #6aaa62;
             --cross:            #b87070;
@@ -45,9 +45,9 @@
             --bg-elevated:      #ffffff;
             --bg-code:          #f2ede5;
             --text-primary:     #1a1714;
-            --text-secondary:   #3d3830;
-            --text-tertiary:    #6b6358;
-            --text-muted:       #a09888;
+            --text-secondary:   #2d2820;
+            --text-tertiary:    #5a5248;
+            --text-muted:       #8a8278;
             --border:           #d8d0c4;
             --border-light:     #e4ddd4;
             --accent:           #1a1714;
@@ -57,11 +57,11 @@
             --accent-warm-muted:rgba(138,92,46,0.10);
             --terminal-bg:      #1a1714;
             --terminal-border:  #2a2620;
-            --terminal-text:    #c4c0b8;
+            --terminal-text:    #d8d4cc;
             --terminal-prompt:  #d4a264;
             --terminal-ok:      #82b07a;
             --terminal-info:    #7aafc6;
-            --terminal-dim:     #4a4640;
+            --terminal-dim:     #6a6458;
             --nav-bg:           rgba(250,248,244,0.94);
             --check:            #3a6e34;
             --cross:            #8f3c3c;
@@ -81,6 +81,7 @@
             overflow-x: hidden;
             transition: background 0.2s, color 0.2s;
             -webkit-font-smoothing: antialiased;
+            font-weight: 500;
         }
 
         .container {
@@ -133,20 +134,25 @@
         .nav-link:hover { color: var(--text-primary); }
 
         .theme-btn {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
             cursor: pointer;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: color 0.15s, border-color 0.15s;
+            transition: color 0.15s, border-color 0.15s, background 0.15s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .theme-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
+        .theme-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+            background: var(--accent-muted);
+        }
 
         /* ── Hero ────────────────────────────────────────────────────── */
 
@@ -250,7 +256,10 @@
             transition: border-color 0.15s;
         }
         .install-pill:hover { border-color: var(--text-muted); }
-        .install-pill code { color: var(--text-secondary); }
+        .install-pill code {
+            background: transparent;
+            padding: 0;
+        }
 
         .copy-btn {
             background: none;
@@ -310,6 +319,7 @@
             gap: 0.625rem;
             opacity: 0;
             animation: fadeUp 0.3s ease forwards;
+            align-items: baseline;
         }
 
         .tl:nth-child(1)  { animation-delay: 0.10s; }
@@ -342,7 +352,6 @@
             width: 6px;
             height: 0.9em;
             background: var(--terminal-prompt);
-            vertical-align: text-bottom;
             animation: blink 1.1s step-end infinite;
             margin-left: 1px;
         }
@@ -435,9 +444,14 @@
 
         code {
             font-family: 'Geist Mono', monospace;
-            font-size: 0.79em;
+            font-size: 0.9em;
             color: var(--accent-warm);
+            background: var(--accent-warm-muted);
+            padding: 0.12em 0.4em;
+            border-radius: 4px;
+            vertical-align: baseline;
         }
+
 
         /* ── Feature grid ────────────────────────────────────────────── */
 
@@ -517,8 +531,27 @@
             border-radius: 8px;
             padding: 1rem 1.25rem;
             margin-top: 0.75rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .component-box:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-1px);
         }
         .component-box + .component-box { margin-top: 0.625rem; }
+
+        .component-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-warm);
+            opacity: 0.7;
+        }
 
         .component-label {
             font-family: 'Geist Mono', monospace;
@@ -526,24 +559,42 @@
             letter-spacing: 0.09em;
             text-transform: uppercase;
             color: var(--text-muted);
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.75rem;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        .tag-row { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+        .component-label::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent-warm);
+            opacity: 0.8;
+        }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
         .tag {
             font-family: 'Geist Mono', monospace;
             font-size: 0.73rem;
-            padding: 0.275rem 0.65rem;
+            padding: 0.35rem 0.75rem;
             background: var(--bg-code);
             border: 1px solid var(--border);
-            border-radius: 4px;
-            color: var(--text-tertiary);
-            transition: color 0.15s, border-color 0.15s;
+            border-radius: 5px;
+            color: var(--text-secondary);
+            transition: all 0.15s;
             cursor: default;
         }
-        .tag:hover { color: var(--accent-warm); border-color: var(--accent-warm); }
+        .tag:hover {
+            color: var(--accent-warm);
+            border-color: var(--accent-warm);
+            background: var(--accent-warm-muted);
+            transform: translateY(-1px);
+        }
 
         /* ── CTA ─────────────────────────────────────────────────────── */
 
@@ -602,13 +653,13 @@
             .hero h1 { font-size: 1.85rem; }
             .feature-grid { grid-template-columns: 1fr; }
             .ops-grid { grid-template-columns: 1fr; }
-            .hero-actions { flex-direction: column; align-items: flex-start; }
             .footer-inner { flex-direction: column; align-items: flex-start; }
             .nav { padding: 0 1.25rem; }
             .container { padding: 0 1.25rem; }
             .compare-table td:first-child { width: 46%; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -843,7 +894,7 @@
                 <a href="docs/getting-started">Documentation</a>
                 <a href="https://github.com/BojanKonjevic/zenit">GitHub</a>
                 <a href="https://github.com/BojanKonjevic/zenit/issues">Issues</a>
-                <a href="https://github.com/BojanKonjevic/zenit/blob/main/CONTRIBUTING.md">Contribute</a>
+                <a href="docs/contributing">Contribute</a>
                 <a href="https://github.com/BojanKonjevic/zenit/blob/main/LICENSE">MIT License</a>
             </div>
             <div class="footer-meta">zenit v1.0.9</div>
