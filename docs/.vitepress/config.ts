@@ -12,7 +12,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: 'https://bojankonjevic.github.io/zenit/' },
       { text: 'GitHub', link: 'https://github.com/BojanKonjevic/zenit' },
-      { text: 'Docs', link: '/getting-started' },
+      { text: 'Docs', link: '' },
     ],
 
     sidebar: [
