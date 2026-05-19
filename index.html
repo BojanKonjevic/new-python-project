@@ -8,40 +8,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* ─── Unified Design Tokens ───────────────────────────────────────────── */
-        /*
-          Dark (default): warm charcoal-brown, not true black.
-          Light: aged cream, not white.
-          Amber: golden, not orange — sits between #c8922e (dark) and #7a5020 (light).
-          All values are shared with custom.css via the same naming logic.
-        */
+        /* ─── Design Tokens ───────────────────────────────────────────── */
         :root {
-            /* Surfaces */
-            --bg:               #141210;   /* warm near-black, 10% warmer than pure */
-            --bg-elevated:      #1c1a15;   /* cards, pills */
-            --bg-code:          #171510;   /* terminal, code blocks */
-            --bg-subtle:        #201e18;   /* hover states */
+            --bg:               #141210;
+            --bg-elevated:      #1c1a15;
+            --bg-code:          #171510;
+            --bg-subtle:        #201e18;
+            --bg-canvas:        #0f0e0c;
 
-            /* Text */
-            --text-primary:     #e6e0d5;   /* cream-white, not harsh */
-            --text-secondary:   #c8c0b0;   /* secondary content */
-            --text-tertiary:    #9c9080;   /* labels, captions */
-            --text-muted:       #6e6458;   /* decorative / placeholders */
+            --text-primary:     #e6e0d5;
+            --text-secondary:   #c8c0b0;
+            --text-tertiary:    #9c9080;
+            --text-muted:       #6e6458;
 
-            /* Borders */
             --border:           #2c2820;
             --border-light:     #242018;
 
-            /* Accent — warm golden amber */
-            --amber:            #c8922e;   /* primary accent dark mode */
+            --amber:            #c8922e;
             --amber-muted:      rgba(200,146,46,0.12);
             --amber-hover:      #d8a848;
+            --amber-glow:       rgba(200,146,46,0.06);
 
-            /* Neutral accent (for primary CTA) */
             --cta-bg:           #e6e0d5;
             --cta-fg:           #141210;
 
-            /* Terminal */
             --terminal-bg:      #0e0d0b;
             --terminal-border:  #252018;
             --terminal-text:    #ccc8be;
@@ -50,19 +40,20 @@
             --terminal-info:    #78a8c2;
             --terminal-dim:     #5e5850;
 
-            /* Nav */
             --nav-bg:           rgba(20,18,16,0.92);
 
-            /* Status */
             --check:            #7aaa72;
             --cross:            #b87878;
+
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         [data-theme="light"] {
-            --bg:               #f2ede6;   /* warm stone — exact match to docs */
-            --bg-elevated:      #f8f4ef;   /* warm white cards */
-            --bg-code:          #e8e1d8;   /* code surfaces */
-            --bg-subtle:        #ebe5dc;   /* hover */
+            --bg:               #f2ede6;
+            --bg-elevated:      #f8f4ef;
+            --bg-code:          #e8e1d8;
+            --bg-subtle:        #ebe5dc;
+            --bg-canvas:        #ede8e0;
 
             --text-primary:     #1e1c18;
             --text-secondary:   #33302a;
@@ -72,9 +63,10 @@
             --border:           #d6cfc5;
             --border-light:     #ddd6cc;
 
-            --amber:            #7a5020;   /* deeper, inky amber for light */
+            --amber:            #7a5020;
             --amber-muted:      rgba(122,80,32,0.10);
             --amber-hover:      #5c3c16;
+            --amber-glow:       rgba(122,80,32,0.04);
 
             --cta-bg:           #1e1c18;
             --cta-fg:           #f2ede6;
@@ -104,22 +96,35 @@
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background 0.2s, color 0.2s;
+            transition: background 0.25s var(--ease-out), color 0.25s var(--ease-out);
             -webkit-font-smoothing: antialiased;
             font-weight: 500;
         }
 
-        .container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        .container { max-width: 780px; margin: 0 auto; padding: 0 2rem; }
 
-        /* ── Nav ──────────────────────────────────────────────────────────── */
+        /* ── Grain texture overlay ─────────────────────────────────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px 256px;
+        }
+        [data-theme="light"] body::before { opacity: 0.018; }
 
+        /* ── Nav ───────────────────────────────────────────────────────── */
         .nav {
             position: sticky;
             top: 0;
             z-index: 100;
             background: var(--nav-bg);
-            backdrop-filter: blur(18px) saturate(1.2);
-            -webkit-backdrop-filter: blur(18px) saturate(1.2);
+            backdrop-filter: blur(20px) saturate(1.3);
+            -webkit-backdrop-filter: blur(20px) saturate(1.3);
             border-bottom: 1px solid var(--border);
             padding: 0 2rem;
             height: 52px;
@@ -141,8 +146,20 @@
             font-size: 0.8rem;
             font-weight: 500;
             transition: color 0.15s;
+            position: relative;
         }
         .nav-link:hover { color: var(--text-primary); }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--amber);
+            transition: width 0.2s var(--ease-out);
+        }
+        .nav-link:hover::after { width: 100%; }
 
         .theme-btn {
             background: var(--bg-elevated);
@@ -164,9 +181,8 @@
             background: var(--bg-subtle);
         }
 
-        /* ── Hero ─────────────────────────────────────────────────────────── */
-
-        .hero { padding: 5.5rem 0 2rem; }
+        /* ── Hero ──────────────────────────────────────────────────────── */
+        .hero { padding: 5.5rem 0 2rem; position: relative; }
 
         .hero-eyebrow {
             display: inline-flex;
@@ -179,29 +195,34 @@
             margin-bottom: 2rem;
         }
         .hero-eyebrow-dot {
-            width: 4px;
-            height: 4px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
             background: var(--amber);
             flex-shrink: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--amber-muted); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 4px var(--amber-muted); }
         }
 
         .hero h1 {
             font-family: 'Instrument Serif', serif;
-            font-size: clamp(2rem, 5vw, 3rem);
+            font-size: clamp(2.1rem, 5.2vw, 3.2rem);
             font-weight: 400;
-            letter-spacing: -0.01em;
-            line-height: 1.18;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
             margin-bottom: 1.25rem;
             color: var(--text-primary);
         }
         .hero h1 em { font-style: italic; color: var(--text-tertiary); }
 
         .hero-lead {
-            font-size: 0.975rem;
+            font-size: 1rem;
             color: var(--text-secondary);
-            max-width: 500px;
-            line-height: 1.8;
+            max-width: 520px;
+            line-height: 1.75;
             margin-bottom: 2rem;
         }
 
@@ -220,9 +241,13 @@
             font-weight: 600;
             letter-spacing: 0.01em;
             border: 1px solid var(--cta-bg);
-            transition: opacity 0.15s, transform 0.15s;
+            transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
         }
-        .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+        .btn-primary:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
 
         .btn-ghost {
             display: inline-flex;
@@ -240,8 +265,7 @@
         }
         .btn-ghost:hover { color: var(--text-primary); border-color: var(--text-muted); background: var(--bg-subtle); }
 
-        /* ── Install strip ────────────────────────────────────────────────── */
-
+        /* ── Install strip ─────────────────────────────────────────────── */
         .install-strip { margin: 2.5rem 0; }
 
         .install-pill {
@@ -254,9 +278,12 @@
             padding: 0.7rem 1rem;
             font-family: 'Geist Mono', monospace;
             font-size: 0.78rem;
-            transition: border-color 0.15s;
+            transition: border-color 0.15s, box-shadow 0.15s;
         }
-        .install-pill:hover { border-color: var(--text-muted); }
+        .install-pill:hover {
+            border-color: var(--text-muted);
+            box-shadow: 0 2px 8px var(--amber-glow);
+        }
         .install-pill code { background: transparent; padding: 0; color: var(--text-secondary); }
 
         .copy-btn {
@@ -273,8 +300,7 @@
         .copy-btn:hover { color: var(--text-primary); }
         .copy-btn.copied { color: var(--terminal-ok); }
 
-        /* ── Terminal ─────────────────────────────────────────────────────── */
-
+        /* ── Terminal ───────────────────────────────────────────────────── */
         .terminal {
             background: var(--terminal-bg);
             border: 1px solid var(--terminal-border);
@@ -282,6 +308,15 @@
             overflow: hidden;
             margin: 0 0 4rem;
             box-shadow: 0 16px 48px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.16);
+            position: relative;
+        }
+        .terminal::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+            pointer-events: none;
         }
 
         [data-theme="light"] .terminal {
@@ -296,7 +331,8 @@
             gap: 0.4rem;
             background: rgba(255,255,255,0.02);
         }
-        .tc { width: 10px; height: 10px; border-radius: 50%; }
+        .tc { width: 10px; height: 10px; border-radius: 50%; transition: transform 0.2s; }
+        .terminal:hover .tc { transform: scale(1.1); }
         .tc-r { background: #c06060; }
         .tc-y { background: #c0a050; }
         .tc-g { background: #60a060; }
@@ -320,7 +356,7 @@
             display: flex;
             gap: 0.625rem;
             opacity: 0;
-            animation: fadeUp 0.3s ease forwards;
+            animation: fadeUp 0.35s var(--ease-out) forwards;
             align-items: baseline;
         }
         .tl:nth-child(1)  { animation-delay: 0.10s; }
@@ -336,7 +372,7 @@
         .tl:nth-child(11) { animation-delay: 2.50s; }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(3px); }
+            from { opacity: 0; transform: translateY(4px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
@@ -358,8 +394,7 @@
         }
         @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* ── Sections ─────────────────────────────────────────────────────── */
-
+        /* ── Sections ──────────────────────────────────────────────────── */
         .section {
             padding: 3.5rem 0;
             border-bottom: 1px solid var(--border);
@@ -393,8 +428,7 @@
             margin-bottom: 2rem;
         }
 
-        /* ── Comparison table ─────────────────────────────────────────────── */
-
+        /* ── Comparison table ──────────────────────────────────────────── */
         .compare-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
 
         .compare-table th {
@@ -410,17 +444,20 @@
         }
 
         .compare-table td {
-            padding: 0.8rem 0.875rem;
+            padding: 0.85rem 0.875rem;
             border-bottom: 1px solid var(--border-light);
             color: var(--text-secondary);
             vertical-align: middle;
+            transition: background 0.15s;
         }
+        .compare-table tr:hover td { background: var(--amber-glow); }
         .compare-table td:first-child { color: var(--text-primary); font-weight: 500; width: 38%; }
 
         .compare-table .yes { color: var(--check); font-weight: 600; }
         .compare-table .no  { color: var(--cross); }
 
         .compare-table .highlight-row td { background: var(--amber-muted); }
+        .compare-table .highlight-row:hover td { background: var(--amber-muted); }
         .compare-table .highlight-row td:first-child { font-weight: 600; }
 
         .compare-note {
@@ -440,8 +477,7 @@
             border-radius: 4px;
         }
 
-        /* ── Feature grid ─────────────────────────────────────────────────── */
-
+        /* ── Feature grid ──────────────────────────────────────────────── */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -453,11 +489,42 @@
             border: 1px solid var(--border);
             border-radius: 9px;
             padding: 1.25rem;
-            transition: border-color 0.2s, transform 0.2s;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        .feature-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+        .feature-card:hover {
+            border-color: var(--amber);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--amber-glow);
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--amber);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .feature-card:hover::before { opacity: 0.5; }
 
-        .feature-icon { font-size: 1.1rem; margin-bottom: 0.875rem; display: block; line-height: 1; }
+        .feature-icon {
+            width: 28px;
+            height: 28px;
+            margin-bottom: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--amber);
+        }
+        .feature-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke-width: 1.5;
+        }
 
         .feature-card h3 {
             font-size: 0.875rem;
@@ -468,8 +535,7 @@
         }
         .feature-card p { font-size: 0.8rem; color: var(--text-tertiary); line-height: 1.7; }
 
-        /* ── Ops grid ─────────────────────────────────────────────────────── */
-
+        /* ── Ops grid ──────────────────────────────────────────────────── */
         .ops-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
 
         .ops-card {
@@ -477,9 +543,27 @@
             border: 1px solid var(--border);
             border-radius: 9px;
             padding: 1.125rem 1.25rem;
-            transition: border-color 0.2s, transform 0.2s;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        .ops-card:hover { border-color: var(--amber); transform: translateY(-1px); }
+        .ops-card:hover {
+            border-color: var(--amber);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px var(--amber-glow);
+        }
+        .ops-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--amber);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .ops-card:hover::before { opacity: 0.5; }
 
         .ops-cmd {
             font-family: 'Geist Mono', monospace;
@@ -491,8 +575,7 @@
         }
         .ops-card p { font-size: 0.8rem; color: var(--text-tertiary); line-height: 1.7; }
 
-        /* ── Component tags ───────────────────────────────────────────────── */
-
+        /* ── Component tags ────────────────────────────────────────────── */
         .component-box {
             background: var(--bg-elevated);
             border: 1px solid var(--border);
@@ -557,15 +640,14 @@
             transform: translateY(-1px);
         }
 
-        /* ── CTA ──────────────────────────────────────────────────────────── */
 
+        /* ── CTA ───────────────────────────────────────────────────────── */
         .cta-section { padding: 4rem 0 2.5rem; text-align: center; }
         .cta-section .section-title { margin: 0 auto 0.625rem; }
         .cta-section .section-sub   { margin: 0 auto 2rem; }
         .cta-section .hero-actions  { justify-content: center; }
 
-        /* ── Footer ───────────────────────────────────────────────────────── */
-
+        /* ── Footer ────────────────────────────────────────────────────── */
         .footer { padding: 2.5rem 0 3rem; border-top: 1px solid var(--border); }
         .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
         .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
@@ -573,13 +655,11 @@
         .footer-links a:hover { color: var(--text-primary); }
         .footer-meta { font-family: 'Geist Mono', monospace; font-size: 0.68rem; color: var(--text-muted); }
 
-        /* ── Scroll reveal ────────────────────────────────────────────────── */
-
-        .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.55s ease, transform 0.55s ease; }
+        /* ── Scroll reveal ─────────────────────────────────────────────── */
+        .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
         .reveal.visible { opacity: 1; transform: none; }
 
-        /* ── Mobile ───────────────────────────────────────────────────────── */
-
+        /* ── Mobile ────────────────────────────────────────────────────── */
         @media (max-width: 680px) {
             .hero { padding: 3.5rem 0 1.5rem; }
             .hero h1 { font-size: 1.85rem; }
@@ -590,6 +670,7 @@
             .container { padding: 0 1.25rem; }
         }
     </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
@@ -612,9 +693,9 @@
             <span class="hero-eyebrow-dot"></span>
             v1.0.9 &mdash; open source
         </div>
-        <h1>Scaffold Python projects.<br><em>Add what you need. Remove cleanly.</em></h1>
+        <h1>Scaffold Python projects.<br><em>Own every line of it.</em></h1>
         <p class="hero-lead">
-            Zenit generates a complete, working project you own entirely. Use it to manage addons over time, or delete <code>.zenit.toml</code> and walk away — your project keeps running either way.
+            Zenit generates a complete, working project you control entirely. Add features incrementally, verify integrity over time, or remove Zenit completely &mdash; your codebase keeps running either way.
         </p>
         <div class="hero-actions">
             <a href="docs/getting-started" class="btn-primary">Read the docs →</a>
@@ -649,7 +730,7 @@
             <div class="tl"><span class="t-dim"><span class="t-ok">✔</span> git init</span></div>
             <div class="tl"><span class="t-dim"><span class="t-arrow">→</span> my-api/ ready</span></div>
             <div class="tl t-blank"></div>
-            <div class="tl"><span class="t-prompt">$</span><span class="t-cmd">cd my-api &amp;&amp; just run</span></div>
+            <div class="tl"><span class="t-prompt">$</span><span class="t-cmd">cd my-api && just run</span></div>
             <div class="tl"><span class="t-info">INFO&nbsp;&nbsp;&nbsp;&nbsp; Uvicorn running on <span class="t-ok">http://127.0.0.1:8000</span></span></div>
             <div class="tl"><span class="t-info">INFO&nbsp;&nbsp;&nbsp;&nbsp; Application startup complete.</span></div>
             <div class="tl"><span class="t-prompt">$</span><span class="t-cursor"></span></div>
@@ -659,13 +740,13 @@
     <div class="section reveal">
         <div class="section-kicker">Comparison</div>
         <h2 class="section-title">Why Zenit?</h2>
-        <p class="section-sub">Most scaffolders give you a starting point. Zenit gives you a project you actually own.</p>
+        <p class="section-sub">Most scaffolders give you a starting point. Zenit gives you a project you actually own, with tooling that stays useful long after day one.</p>
 
         <table class="compare-table">
             <thead>
                 <tr>
                     <th></th>
-                    <th>Other scaffolds</th>
+                    <th>Cookiecutter / Copier</th>
                     <th>Zenit</th>
                 </tr>
             </thead>
@@ -680,7 +761,7 @@
         </table>
 
         <p class="compare-note">
-            Zenit is useful long-term but you're never trapped. Delete <code>.zenit.toml</code> anytime — your project keeps running exactly as before.
+            Zenit is useful long-term but you're never trapped. Delete <code>.zenit.toml</code> anytime &mdash; your project keeps running exactly as before.
         </p>
     </div>
 
@@ -691,17 +772,23 @@
 
         <div class="feature-grid">
             <div class="feature-card">
-                <span class="feature-icon">📐</span>
+                <span class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                </span>
                 <h3>Templates</h3>
-                <p>A base project structure — directories, core files, dependencies. Choose <code>blank</code> or <code>fastapi</code>.</p>
+                <p>A base project structure &mdash; directories, core files, dependencies. Choose <code>blank</code> or <code>fastapi</code>.</p>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">🧩</span>
+                <span class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                </span>
                 <h3>Addons</h3>
                 <p>Incremental additions layered on top. Add or remove at any time without breaking your project.</p>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">⚡</span>
+                <span class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </span>
                 <h3>Your project</h3>
                 <p>A complete, ready-to-run codebase. No runtime dependency on Zenit. Ever.</p>
             </div>
@@ -711,7 +798,7 @@
     <div class="section reveal">
         <div class="section-kicker">Operations</div>
         <h2 class="section-title">Stay in control</h2>
-        <p class="section-sub">Verify, manage, and clean up your project at any time with four commands.</p>
+        <p class="section-sub">Four commands for the full lifecycle. Use them on day one or day one hundred.</p>
 
         <div class="ops-grid">
             <div class="ops-card">
@@ -740,17 +827,23 @@
 
         <div class="feature-grid">
             <div class="feature-card">
-                <span class="feature-icon">🔗</span>
+                <span class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                </span>
                 <h3>Structural injection</h3>
-                <p>Code inserted via libcst — AST-aware, formatter-resilient. No regex hacks that break on style changes.</p>
+                <p>Code inserted via libcst &mdash; AST-aware, formatter-resilient. No regex hacks that break on style changes.</p>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">🔒</span>
+                <span class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
                 <h3>Fingerprinted manifest</h3>
                 <p>Every injected block is hashed. Zenit knows exactly what it wrote and can verify or remove it safely.</p>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">🔓</span>
+                <span class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                </span>
                 <h3>Zero lock-in</h3>
                 <p>Delete <code>.zenit.toml</code> and <code>uv remove zenit</code>. Your project runs without us.</p>
             </div>
@@ -784,10 +877,10 @@
     </div>
 
     <div class="cta-section reveal">
-        <h2 class="section-title">Ready to build?</h2>
+        <h2 class="section-title">Try it in thirty seconds</h2>
         <p class="section-sub">One command. A complete project. No strings attached.</p>
         <div class="hero-actions">
-            <a href="docs/getting-started" class="btn-primary">Get started →</a>
+            <a href="docs/getting-started" class="btn-primary">Quickstart guide →</a>
             <a href="https://github.com/BojanKonjevic/zenit" class="btn-ghost">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
                 Star on GitHub
@@ -857,3 +950,4 @@
 </script>
 </body>
 </html>
+
