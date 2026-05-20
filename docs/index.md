@@ -17,25 +17,25 @@ features:
   - title: Getting Started
     details: Install Zenit, create your first project, and run it locally in under five minutes.
     link: /getting-started
-    linkText: Read guide →
+    linkText: Read guide 
   - title: Commands
     details: Reference for create, add, remove, doctor, and list — with every flag, option, and error condition.
     link: /commands/
-    linkText: Browse commands →
+    linkText: Browse commands 
   - title: Templates
     details: Choose between blank and fastapi. Understand what each generates, its injection points, and compatible addons.
     link: /templates/
-    linkText: See templates →
+    linkText: See templates 
   - title: Addons
     details: Add capabilities like Docker, Redis, Celery, or auth. Remove them just as cleanly when you no longer need them.
     link: /addons/
-    linkText: Browse addons →
+    linkText: Browse addons 
   - title: Architecture
     details: How the manifest, libcst code injection, declarative addons, and rollback logic work under the hood.
     link: /architecture/
-    linkText: Explore →
+    linkText: Explore 
   - title: Contributing
     details: Coding standards, test requirements, and the process for submitting bug fixes or new addons.
     link: /contributing
-    linkText: Read guide →
+    linkText: Read guide 
 ---
