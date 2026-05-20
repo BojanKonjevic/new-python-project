@@ -3,7 +3,7 @@
 /* ─── Design System ──────────────────────────────────────────────────────────
   DARK  — warm charcoal-brown. Not true black, not green-tinted.
           Like a well-worn desk in a dark room.
-          Accent: warm golden amber — matches the landing page exactly.
+          Accent: warm golden amber.
 
   LIGHT — warm parchment. Proper ink-on-paper. Not blinding white, not cream.
           The page bg is warm stone, content sits on slightly lighter paper.
@@ -47,9 +47,9 @@
   --vp-c-code-inline:    #7a5020;
   --vp-c-code-inline-bg: rgba(122, 80, 32, 0.10);
 
-  /* Light code blocks: warm stone, slightly darker than page */
+  /* ── Light: code blocks — noticeably darker than page ── */
   --vp-code-block-bg:     #e8e1d8;
-  --vp-code-block-border: #d0c8be;
+  --vp-code-block-border: #bfb7ac;
 }
 
 /* ─── Dark theme ─────────────────────────────────────────────────────────── */
@@ -221,7 +221,7 @@ html.dark .vp-doc div[class*='language-'] {
 }
 
 html:not(.dark) .vp-doc div[class*='language-'] > span.lang { color: #a09888 !important; }
-html.dark       .vp-doc div[class*='language-'] > span.lang { color: #3a3228 !important; }
+html.dark       .vp-doc div[class*='language-'] > span.lang { color: #6b5e4e !important; }
 
 .vp-doc div[class*='language-'] > button.copy {
   border-color: var(--vp-code-block-border) !important;
@@ -238,87 +238,69 @@ html.dark       .vp-doc div[class*='language-'] > span.lang { color: #3a3228 !im
   font-feature-settings: 'liga' 0, 'calt' 0 !important;
 }
 
-/* ─── Syntax token overrides ─────────────────────────────────────────────── */
+/* ─── Syntax token overrides (Catppuccin Mocha / Latte) ──────────────────── */
 /*
-  Light code blocks: warm stone background → need dark, readable ink tones.
-  Dark code blocks:  near-black warm → need luminous, low-contrast highlights.
+  Dark  → Catppuccin Mocha  (fits your #0e0d0b code block surface)
+  Light → Catppuccin Latte  (fits the warm parchment bg)
 
-  Token map (github-light / github-dark Shiki):
-    #6F42C1 / #B392F0 — functions, bash executables  (uv, uvx, zenit)
-    #D73A49 / #F97583 — keywords, operators
-    #032F62 / #9ECBFF — strings; bash args/subcommands
-    #005CC5 / #79B8FF — numbers, types, built-ins
-    #E36209 / #FFAB70 — attributes, flags, object keys
-    #6A737D / #6A737D — comments
-    #24292E / #E1E4E8 — base text
-
-  LIGHT (warm stone bg):
-    executables → deep inky amber    — matches brand, strong and clear
-    keywords    → muted terracotta   — reserved, warm, not alarming
-    strings     → deep teal          — data feels cool
-    numbers     → deep amber         — numbers in amber feels right on warm bg
-    flags       → sienna             — actionable
-    comments    → italic warm gray
-    base text   → near-black
-
-  DARK (near-black warm bg):
-    executables → warm golden amber  — matches brand exactly
-    keywords    → soft coral         — reserved words, clear but not harsh
-    strings     → sky blue           — data/values, classic
-    numbers     → warm gold lighter  — numbers pop against near-black
-    flags       → warm peach         — distinct from gold, actionable
-    comments    → dim warm gray      — barely there, italic
-    base text   → cream-white
+  Shiki github-light / github-dark token → Catppuccin role mapping:
+    #6F42C1 / #B392F0  functions, bash executables   → Blue  / Blue
+    #D73A49 / #F97583  keywords, operators            → Mauve / Mauve
+    #032F62 / #9ECBFF  strings, bash args             → Green / Green
+    #005CC5 / #79B8FF  numbers, types, built-ins      → Peach / Peach
+    #E36209 / #FFAB70  attributes, flags, object keys → Yellow / Yellow
+    #6A737D / #6A737D  comments                       → Overlay0 italic
+    #24292E / #E1E4E8  base text                      → Text / Text
 */
 
-/* Executables / functions — #6F42C1 */
+/* Functions / executables — #6F42C1 / #B392F0 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6F42C1'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6f42c1'] {
-  --shiki-light: #7a5020 !important;
-  --shiki-dark:  #c8922e !important;
+  --shiki-light: #1e66f5 !important;   /* Latte Blue   */
+  --shiki-dark:  #89b4fa !important;   /* Mocha Blue   */
 }
 
-/* Keywords / operators — #D73A49 */
+/* Keywords / operators — #D73A49 / #F97583 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#D73A49'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#d73a49'] {
-  --shiki-light: #8a3a28 !important;
-  --shiki-dark:  #d47870 !important;
+  --shiki-light: #8839ef !important;   /* Latte Mauve  */
+  --shiki-dark:  #cba6f7 !important;   /* Mocha Mauve  */
 }
 
-/* Strings / bash args — #032F62 */
+/* Strings / bash args — #032F62 / #9ECBFF */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#032F62'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#032f62'] {
-  --shiki-light: #285870 !important;
-  --shiki-dark:  #72aac8 !important;
+  --shiki-light: #40a02b !important;   /* Latte Green  */
+  --shiki-dark:  #a6e3a1 !important;   /* Mocha Green  */
 }
 
-/* Numbers / types / built-ins — #005CC5 */
+/* Numbers / types / built-ins — #005CC5 / #79B8FF */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#005CC5'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#005cc5'] {
-  --shiki-light: #7a5018 !important;
-  --shiki-dark:  #d4a84c !important;
+  --shiki-light: #f3640b !important;   /* Latte Peach  */
+  --shiki-dark:  #fab387 !important;   /* Mocha Peach  */
 }
 
-/* Flags / attributes / object keys — #E36209 */
+/* Flags / attributes / object keys — #E36209 / #FFAB70 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#E36209'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#e36209'] {
-  --shiki-light: #7a4018 !important;
-  --shiki-dark:  #c8885a !important;
+  --shiki-light: #8a6000 !important;   /* Latte Yellow */
+  --shiki-dark:  #f9e2af !important;   /* Mocha Yellow */
 }
 
 /* Comments — #6A737D */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6A737D'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#6a737d'] {
-  --shiki-light: #9a9088 !important;
-  --shiki-dark:  #5e5448 !important;
+  --shiki-light: #7a7488 !important;   /* Latte Overlay0 */
+  --shiki-dark:  #6c7086 !important;   /* Mocha Overlay0 */
   font-style: italic !important;
 }
 
-/* Base text — #24292E */
+/* Base text — #24292E / #E1E4E8 */
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#24292E'],
 .vp-doc div[class*='language-'] span[style*='--shiki-light:#24292e'] {
-  --shiki-light: #2a2620 !important;
-  --shiki-dark:  #d8d0c0 !important;
+  --shiki-light: #4c4f69 !important;   /* Latte Text   */
+  --shiki-dark:  #cdd6f4 !important;   /* Mocha Text   */
 }
 
 /* ─── Callouts ───────────────────────────────────────────────────────────── */
