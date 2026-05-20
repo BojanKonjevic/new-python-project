@@ -1,127 +1,207 @@
 # Code Injection
 
-Some addons need to modify files that already exist in the project — files created by the template that may already contain your code. The `redis` addon needs to add connection pool fields to your `Settings` class. The `auth-manual` addon needs to register its router. The `celery` addon needs a lifespan hook.
+Some addons need to modify files that already exist — files the template created that may already contain your code. The `redis` addon adds a settings field. The `auth-manual` addon registers its router. The `sentry` addon calls `init_sentry()` in the lifespan.
 
-A naive approach would append to the file or replace a sentinel comment. Both break the moment the file is formatted, refactored, or edited in any way that moves the target location. Zenit uses a different approach: it parses the file into a concrete syntax tree, locates the insertion point structurally, splices in the new code, and validates that the result is syntactically valid Python before writing anything.
-
-This page explains how that pipeline works and how removal reverses it.
+Naively appending or using sentinel comments breaks the moment the file is formatted, refactored, or edited. Zenit parses the target file into a concrete syntax tree, locates the insertion point structurally, splices in the code, and validates the result is still valid Python before writing anything.
 
 ---
 
 ## Why libcst
 
-Zenit uses [libcst](https://libcst.readthedocs.io/) rather than regex or string replacement for two reasons.
+**Regex is positional.** It finds text at a known location. If the file is reformatted, the location changes. If the user adds an import above the target, everything shifts. Regex requires the file to be in a stable, known state — which source files never are.
 
-**Regex and string replacement are positional.** They find text at a specific location in the file. If the file is reformatted, the location changes and the match fails. If the user adds an import above the target, everything shifts. These approaches require the file to be in a known, stable state — which source files never are.
-
-**libcst is structural.** It parses Python source into a concrete syntax tree that preserves every byte of the original file — whitespace, comments, blank lines — while also understanding the code semantically. "After the last field in the `Settings` class" is a structural description that remains correct regardless of what the surrounding code looks like. The tree can be modified and serialised back to source without changing anything that wasn't explicitly touched.
-
-libcst also validates. After injection, Zenit re-parses the result. If the output is not valid Python for any reason, the operation aborts before the file is written.
+**libcst is structural.** It understands "the body of function `lifespan`" or "after the last attribute in class `Settings`". The location doesn't change when the file is formatted, because the locator doesn't care about line numbers — it navigates the syntax tree.
 
 ---
 
 ## The injection pipeline
 
-When `zenit add` applies an addon that has injections, each injection goes through the following steps:
+When `zenit add` applies an injection, the pipeline runs in this order:
 
-1. **Read** the target file from disk.
-2. **Parse** it into a libcst `Module`.
-3. **Run the locator** — a pure function that receives the module and returns the index in the module body at which to insert the new statements.
-4. **Splice** the new statements into the tree at that index.
-5. **Serialise** the modified tree back to source.
-6. **Validate** by parsing the result. If parsing fails, abort and report the error — the original file is unchanged.
-7. **Write** the result to disk.
-8. **Record** the injection in `.zenit.toml`: the file path, the locator used, the line range written, and two fingerprints of the injected block.
+1. Parse the target file into a libcst module.
+2. Call the named locator to get an integer insertion index.
+3. Splice the content at that index.
+4. Parse the result to validate it's still valid Python. If not, abort — the file is not written.
+5. Write the file and record a fingerprint of the injected block in `.zenit.toml`.
 
-Steps 6 and 7 are atomic from the user's perspective — either both happen or neither does.
+Steps 4 and 5 are atomic — either both happen or neither does.
+
+---
+
+## Handlers
+
+Different file types use different strategies:
+
+| Handler | File types | Strategy |
+|---|---|---|
+| `PythonHandler` | `*.py` | libcst structural injection |
+| `TomlHandler` | `*.toml` | tomlkit append; skips if top-level key already exists |
+| `YamlHandler` | `*.yml`, `*.yaml` | append block; skips if first content key is already present |
+| `JustfileHandler` | `justfile` | append recipe; skips if recipe name already exists |
+| `EnvHandler` | `.env*` | append `key=value`; skips keys already defined |
+
+All handlers are idempotent: safe to call twice, they never overwrite existing content without confirmation, and they record what they wrote in the manifest.
 
 ---
 
 ## Locators
 
-A locator is a pure function that takes a parsed `libcst.Module` and returns a body index. The template declares which named locators are available and which injection points map to which locators. Addons reference injection points by name — they do not specify locators directly.
+Locators are pure functions that take a parsed libcst module and keyword arguments, and return an integer body index at which to insert new code. All locators raise `LocatorError` with an actionable message on failure.
 
-The available locators are:
+### Available locators
 
-| Locator | Finds |
-|---|---|
-| `after_last_import` | After the last import statement at module level |
-| `after_last_class_attribute` | After the last field or annotation in a named class |
-| `after_statement_matching` | After the first top-level statement matching a regex |
-| `before_yield_in_function` | Before the `yield` in an async generator (lifespan functions) |
-| `before_return_in_function` | Before the first `return` in a named function |
-| `in_function_body` | Before or after an anchor statement inside a named function |
-| `at_module_end` | Appended at the end of the module body |
-| `at_file_end` | Appended at the end of a non-Python file |
+**`after_last_class_attribute`** — inserts after the last field in a class.
 
-Most locators accept arguments. `after_last_class_attribute` takes a `class_name` so it can find the right class when a file contains more than one. `in_function_body` takes a function name and an anchor statement. These arguments are recorded in the manifest so the same locator can be reconstructed during removal.
+```python
+# args: {class_name: "Settings"}
+# Use for: adding settings fields, model fields
+locator=LocatorSpec(
+    name="after_last_class_attribute",
+    args={"class_name": "Settings"},
+)
+```
+
+```python
+# Result: new field added after the last existing one
+class Settings(BaseSettings):
+    database_url: str = "..."
+    redis_url: str = "..."     # ← injected here
+```
 
 ---
 
-## Non-Python files
+**`before_yield_in_function`** — inserts before the `yield` in an async generator (lifespan startup).
 
-Not all injections target Python files. The `docker`, `redis`, and `celery` addons also modify `compose.yml`, `justfile`, and `.env.example`. These use simpler typed handlers rather than the libcst pipeline:
+```python
+# args: {function: "lifespan"}
+# Use for: startup hooks — code runs before the app starts serving
+locator=LocatorSpec(
+    name="before_yield_in_function",
+    args={"function": "lifespan"},
+)
+```
 
-| Handler | Matches | Strategy |
-|---|---|---|
-| `PythonHandler` | `*.py` | libcst parse → locator → splice → validate |
-| `TomlHandler` | `*.toml` | tomlkit round-trip; skips if top-level key already exists |
-| `YamlHandler` | `*.yml`, `*.yaml` | Append block; skips if first content key is already present |
-| `JustfileHandler` | `justfile` | Append recipe; skips if recipe name already exists |
-| `EnvHandler` | `.env*` | Append key=value; skips keys that are already defined |
+```python
+# Result: startup code added before yield
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+    redis_pool = await create_redis_pool(...)  # ← injected here
+    yield
+    await redis_pool.aclose()
+```
 
-All handlers share the same contract: they are idempotent (safe to call twice), they never overwrite existing content without confirmation, and they record what they wrote in the manifest.
+---
+
+**`in_function_body`** — inserts before or after a specific statement inside a function.
+
+```python
+# args: {function: "lifespan", anchor_pattern: "yield", position: "after"}
+# Use for: shutdown hooks — position="after" means after the yield
+locator=LocatorSpec(
+    name="in_function_body",
+    args={"function": "lifespan", "anchor_pattern": "yield", "position": "after"},
+)
+```
+
+```python
+# Result: shutdown code added after yield
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+    yield
+    await redis_pool.aclose()  # ← injected here
+```
+
+---
+
+**`after_statement_matching`** — inserts after the first top-level statement matching a regex.
+
+```python
+# args: {pattern: "api_router = APIRouter()"}
+# Use for: inserting router includes after the router is instantiated
+locator=LocatorSpec(
+    name="after_statement_matching",
+    args={"pattern": "api_router = APIRouter()"},
+)
+```
+
+---
+
+**`before_return_in_function`** — inserts before the first `return` in a named function.
+
+```python
+# args: {function: "main"}
+# Use for: blank template startup — main() returns instead of yielding
+locator=LocatorSpec(
+    name="before_return_in_function",
+    args={"function": "main"},
+)
+```
+
+---
+
+**`after_last_import`** — inserts after the last import statement at module level.
+
+```python
+locator=LocatorSpec(name="after_last_import", args={})
+```
+
+---
+
+**`at_module_end`** — appends at the end of the module body.
+
+```python
+locator=LocatorSpec(name="at_module_end", args={})
+```
+
+---
+
+### Choosing a locator
+
+| What you want to inject | Locator |
+|---|---|
+| A field into a settings or config class | `after_last_class_attribute` + `class_name` |
+| Startup code (before app starts) | `before_yield_in_function` + `function="lifespan"` |
+| Shutdown code (after yield) | `in_function_body` + `position="after"`, `anchor_pattern="yield"` |
+| A router include | `after_statement_matching` + pattern of the router variable |
+| An import statement | `after_last_import` |
+| Code in `main()` for blank template | `before_return_in_function` + `function="main"` |
+| A top-level definition | `at_module_end` |
 
 ---
 
 ## What Zenit injects
 
-Zenit injects only infrastructure wiring. It never injects into existing business logic, data models, or test files. Some addons do create new test files — that is a file write, not an injection.
+Zenit injects infrastructure wiring only. It never injects into business logic, data models, or test files.
 
-Concretely, injections are limited to:
-
-- Startup and shutdown hooks in lifespan functions
-- Router registration calls
-- Middleware configuration
-- Settings class fields for connection URLs and feature flags
-- Module-level imports required by the above
-
-If an addon needs a file that contains logic — a Redis helper module, a Celery app definition, an auth router — it writes that as a new file, not as an injection into an existing one. Injections are reserved for the minimal wiring needed to connect a new file into the existing project structure.
+Injections are limited to: startup and shutdown hooks, router registration calls, middleware configuration, settings class fields, and module-level imports required by those. If an addon needs a file that contains logic — a Redis helper module, a Celery app definition, an auth router — it writes that as a new file, not as an injection.
 
 ---
 
-## Removal
+## Removal and fingerprinting
 
-When `zenit remove` processes an addon, it reverses each injection in the manifest. For Python files, the removal pipeline is:
+When `zenit remove` processes an addon, it reverses each injection using a three-stage search:
 
-1. **Read** the current file from disk.
-2. **Locate the injected block** using the recorded fingerprint. Three strategies are tried in order:
-   - **Exact fingerprint** — SHA-256 of the canonical libcst output matches the recorded value exactly.
-   - **Normalised fingerprint** — SHA-256 after stripping trailing whitespace and collapsing blank lines. Succeeds when the file has been run through a formatter since injection.
-   - **Fuzzy match** — SequenceMatcher similarity ≥ 85% within a 20-line window centred on the recorded line range. Used when the block has been lightly edited. Zenit prints a warning showing exactly what it found and requires confirmation before proceeding.
-3. **Excise** the identified lines from the file.
-4. **Validate** by parsing the result. If the remaining code is not valid Python, abort and report the error.
-5. **Write** the result to disk.
-6. **Remove** the manifest entry.
+**Stage A — exact fingerprint.** SHA-256 of the canonical libcst output. Matches when the block is untouched.
 
-If none of the three fingerprint strategies succeed, Zenit prints the recorded block content alongside the file path and instructs you to remove it manually. It does not attempt a best-guess deletion.
+**Stage B — normalised fingerprint.** SHA-256 after stripping trailing whitespace and collapsing blank lines. Matches when a formatter has run over the file. Silent.
+
+**Stage C — fuzzy match.** SequenceMatcher similarity ≥ 85% within a 20-line window around the recorded position. Used when the block has been lightly edited. Zenit warns and asks for confirmation.
+
+If none succeed, Zenit prints the recorded block content, the file path, and asks you to remove it manually. It never silently corrupts a file.
+
+After excising, the result is parsed to confirm it's still valid Python. If not, the operation aborts without writing.
 
 ---
 
-## Edge cases
+## Debugging injection failures
 
-**What if the user edits code inside an injected block?**
+**Use `--dry-run` first.** `zenit add <addon> --dry-run` shows exactly what would be injected and where, without writing anything.
 
-`zenit doctor` will flag it — the fingerprint no longer matches. When `zenit remove` runs, the fuzzy match will likely still find the block (depending on how much was changed) and will warn before removing. If the edit was substantial enough that the fuzzy match fails, Zenit exits with an error and manual removal instructions.
+**When `zenit doctor` shows a fingerprint mismatch:**
+```
+⚠ my_project/settings.py  injection: settings_fields — exact mismatch
+```
+This means the injected block has been modified since it was written. `zenit remove` will still work — it will use fuzzy matching and ask for confirmation.
 
-**What if the target file doesn't exist?**
+**When `zenit remove` fails to locate a block:**
+Zenit prints the original block content and the file it expected to find it in. Open the file, find the code manually (it will be similar to what was printed), remove it, then run `zenit doctor` to clear the error.
 
-Addons declare their target files as dependencies. If a target file is missing when `zenit add` runs, the operation fails before any changes are made. `zenit doctor` will also flag missing injection targets as errors.
-
-**What if two addons inject into the same file?**
-
-Each injection has its own manifest entry and its own fingerprint. Injections are applied in the order the addons were installed and stack independently — each has a distinct location in the file. Removal of one does not affect the other. The locators are re-run at removal time against the current file state, so the recorded line ranges are only hints; the actual positions are resolved structurally.
-
-**What if injection would produce invalid Python?**
-
-The validation step catches this before the file is written. Zenit reports the error, shows the proposed output, and exits without modifying anything. This has never been observed in practice with the current set of addons, but the check exists because a corrupted source file would be significantly worse than a failed `add`.
+**Use `zenit doctor --thorough`** after running a formatter. It runs all three fingerprint strategies and reports which one matches, giving you confidence before running `zenit remove`.

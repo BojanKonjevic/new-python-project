@@ -1,110 +1,64 @@
-# Contributing Guide
+# Contributing
 
 Zenit is currently a solo project. These guidelines exist so that if you want to contribute, the process is clear — and so the author doesn't forget his own conventions.
 
 ---
 
-## Quick start for contributors
+## Quick start
 
 ```bash
-# Clone
 git clone https://github.com/BojanKonjevic/zenit.git
 cd zenit
 
 # Install uv if you haven't already
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Sync dependencies and enter the environment
 uv sync
-
-# Run the test suite
-just test
-
-# Run lint, format, and type checks
-just lint
-just fmt
-just check
+just test    # full test suite (800+ tests)
+just lint    # ruff check
+just fmt     # ruff format
+just check   # mypy strict
 ```
 
 ---
 
 ## What to contribute
 
-### Definitely welcome
+**Definitely welcome:** bug fixes, documentation improvements, new addons, template improvements, more test coverage.
 
-- **Bug fixes** — especially edge cases in the injection/removal pipeline
-- **Documentation** — typos, unclear explanations, missing examples
-- **New addons** — see [Architecture: Addons & Templates](./architecture/addons-and-templates.md) for the declarative manifest format
-- **Template improvements** — better defaults, clearer generated code
-- **Test coverage** — every behavior change should include tests
-
-### Discuss first
-
-- **Core pipeline changes** — manifest schema, injection engine, rollback logic
-- **New CLI commands** — the surface area is intentionally narrow
-- **Breaking changes** — anything that would alter `.zenit.toml` schema or existing addon behavior
-
-Open a GitHub Issue with your proposal. If it aligns with the project's direction, we'll hash out the approach before you write code.
+**Discuss first** (open an issue before writing code): core pipeline changes (manifest schema, injection engine, rollback logic), new CLI commands, and anything that would alter `.zenit.toml` schema or existing addon behaviour.
 
 ---
 
 ## How to contribute
 
-### Reporting bugs
+1. Fork and branch — `git checkout -b fix-something`
+2. Write the change, following the standards below
+3. Add tests — every behaviour change ships with tests, no exceptions
+4. Run `just test`, `just lint`, `just check` — all must be clean
+5. Open a PR — describe what changed and why
 
-Use [GitHub Issues](https://github.com/BojanKonjevic/zenit/issues). Include:
-
-1. Zenit version (`zenit --version`)
-2. Python version and OS
-3. Minimal reproduction steps
-4. Expected vs. actual behavior
-5. If relevant, the contents of `.zenit.toml` and the output of `zenit doctor`
-
-### Submitting changes
-
-1. **Fork and branch** — `git checkout -b fix-something` or `git checkout -b add-something`
-2. **Write the change** — follow the coding standards below
-3. **Add tests** — every behavior change ships with tests. No exceptions
-4. **Run the suite** — `just test` must pass, `just lint` and `just check` must be clean
-5. **Open a PR** — describe what changed and why. Reference any related issues
-
-PRs are reviewed before merge. Small, focused changes move faster than large refactors.
+Small, focused changes move faster than large refactors.
 
 ---
 
 ## Coding standards
 
-### Type discipline
+**Types.** Strict MyPy. No `Any` without `# type: ignore[...]` justification. Use `from __future__ import annotations` when forward references are needed. No bare `except:` or `except Exception:` unless re-raising immediately.
 
-- Strict MyPy. No `Any` without `# type: ignore[...]` justification
-- Use `from __future__ import annotations` when forward references are needed
-- No bare `except:` or `except Exception:` unless re-raising immediately
+**Style.** Ruff handles formatting and import sorting — run `just fmt`. Functions should be small and single-purpose; over 30 lines is a smell. Explicit type annotations on all signatures. No star imports.
 
-### Code style
+**Comments.** Don't add file-header path comments. Don't explain what the code already says. Comment non-obvious intent or domain quirks only.
 
-- Ruff handles formatting and import sorting. Run `just fmt` before committing
-- Functions should be small and single-purpose. >30 lines is a smell
-- Explicit type annotations on all signatures
-- No star imports
-- No file-header path comments or "obviously AI" comments
+**Errors.** Use the `ScaffoldError` hierarchy — no raw `ValueError` or `RuntimeError` in user-facing paths. Error messages must say what failed, why it failed, and how to fix it.
 
-### Error handling
+---
 
-- Use the `ScaffoldError` hierarchy. No raw `ValueError` or `RuntimeError` in user-facing paths
-- Error messages must be actionable: what failed, why it failed, and how to fix it
+## Testing
 
-### Testing
+Zenit has 800+ tests covering injection, removal, round-trip integrity, and edge cases. Every PR-level change includes tests.
 
-Test layers, in order of preference:
-
-| Layer | Scope | Speed |
-|---|---|---|
-| Unit | Single function/class, mocked | Fast |
-| Integration | Multiple modules, real filesystem | Medium |
-| Functional | End-to-end CLI invocation | Medium |
-| Slow | I/O-heavy or network-tolerant | Slow |
-
-Cover edge cases: empty input, malformed input, missing files, permission errors. Cover error paths: every `raise` and every `except` branch should have a test.
+Test layers: unit (single function, mocked dependencies), integration (multiple modules, real filesystem), functional (end-to-end CLI), and slow (I/O-heavy). Cover edge cases — empty input, malformed input, missing files, permission errors — and every `raise` and `except` branch.
 
 ---
 
@@ -112,23 +66,20 @@ Cover edge cases: empty input, malformed input, missing files, permission errors
 
 If you're modifying core code, keep these in mind:
 
-1. **User trust & independence** — Zenit must never trap users. Removal must be trivial
-2. **Declarative over imperative** — addons describe what they add, they don't run arbitrary code
-3. **Everything must be removable** — the design constraint that shapes every decision
-4. **Composition over inheritance** — extend via handlers and hooks, not subclassing
-5. **Public API minimal and stable** — templates and core logic stay strictly separated
+1. **User trust & independence** — Zenit must never trap users. Removal must be trivial.
+2. **Declarative over imperative** — addons describe what they add, they don't run arbitrary code.
+3. **Everything must be removable** — the design constraint that shapes every other decision.
+4. **Composition over inheritance** — extend via handlers and hooks, not subclassing.
+5. **Public API minimal and stable** — templates and core logic stay strictly separated.
 
 ---
 
-## Communication
+## Reporting bugs
 
-- **Bug reports & feature requests:** [GitHub Issues](https://github.com/BojanKonjevic/zenit/issues)
-- **Real-time chat:** Discord (coming if the project grows)
-- **Security issues:** Email the maintainer directly (do not open public issues)
+Use [GitHub Issues](https://github.com/BojanKonjevic/zenit/issues). Include the Zenit version (`zenit --version`), Python version and OS, minimal reproduction steps, expected vs. actual behaviour, and — if relevant — the contents of `.zenit.toml` and the output of `zenit doctor`.
 
 ---
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [MIT License](https://github.com/BojanKonjevic/zenit/blob/main/LICENSE). No CLA or DCO required.
-
+By contributing, you agree that your contributions will be licensed under the [MIT License](https://github.com/BojanKonjevic/zenit/blob/main/LICENSE).
